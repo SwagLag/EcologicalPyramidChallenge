@@ -1,7 +1,8 @@
-# Ecological Pyramid Challenge
+# The dance of the bees Challenge
 
-Een Simulatie die de ecologische pyramide simuleert, met producenten en meerdere ordes van consumenten die elkaar bejagen en waarvan de eerste orde de producenten
-bejaagt.
+Een simulatie die de verzameling van nectar door bijen simuleert.
+
+Het idee van de simulatie om
 
 # Project documenten
 
