@@ -31,7 +31,7 @@ class BeeSimulation(Model):
         self.init_people = init_bees
         self.init_nectar = init_nectar
         self.schedule = RandomActivation(self)
-        self.grid = MultiGrid(self.width, self.height, torus=True)
+        self.grid = MultiGrid(self.width, self.height, torus=False)
 
         self.nectar_collected = 0
 
@@ -43,32 +43,31 @@ class BeeSimulation(Model):
 
         # create people for the model according to number of people set by user
         instance_last_id = 0
-        for i in range(self.init_people):
-            # set x, y coords randomly within the grid
-            empty_loc = self.grid.find_empty()
-            p = Bee(instance_last_id, empty_loc, self, True)
-            # place the object on the grid at coordinates (x, y)
-            self.grid.place_agent(p, empty_loc)
-            # add the Person object to the model schedule
-            self.schedule.add(p)
-            instance_last_id += 1
 
-        for i in range(0, self.init_nectar):
-            empty_loc = self.grid.find_empty()
-            p = Nectar(instance_last_id, empty_loc, self)
-            # place the object on the grid at coordinates (x, y)
-            self.grid.place_agent(p, empty_loc)
-            # add the object to the model schedule
-            self.schedule.add(p)
-            instance_last_id += 1
-
+        # Spawn Hives
         empty_loc = self.grid.find_empty()
         p = Hive(instance_last_id, empty_loc, self)
         self.grid.place_agent(p, empty_loc)
         self.schedule.add(p)
-
         self.running = True
         self.datacollector.collect(self)
+        instance_last_id += 1
+
+        # Spawn Bees
+        for i in range(self.init_people):
+            empty_loc = self.grid.find_empty()
+            p = Bee(instance_last_id, empty_loc, self, False)
+            self.grid.place_agent(p, empty_loc)
+            self.schedule.add(p)
+            instance_last_id += 1
+
+        # Spawn Nectar
+        for i in range(0, self.init_nectar):
+            empty_loc = self.grid.find_empty()
+            p = Nectar(instance_last_id, empty_loc, self)
+            self.grid.place_agent(p, empty_loc)
+            self.schedule.add(p)
+            instance_last_id += 1
 
     def step(self):
         # tell all the agents in the model to run their step function

@@ -49,7 +49,7 @@ def agent_portrayal(agent):
 # dictionary of user settable parameters - these map to the model __init__ parameters
 model_params = {
     "init_bees": UserSettableParameter(
-        "slider", "Bees", 3, 1, 10, description="Initial Number of Bees"
+        "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
     ),
     "init_nectar": UserSettableParameter(
         "slider", "Nectar", 10, 1, 30, description="Initial Number of Nectar"
