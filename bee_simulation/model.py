@@ -23,12 +23,12 @@ class BeeSimulation(Model):
             self,
             height=grid_h,
             width=grid_w,
-            init_people=1,
+            init_bees=1,
             init_nectar=1
     ):
         self.height = height
         self.width = width
-        self.init_people = init_people
+        self.init_people = init_bees
         self.init_nectar = init_nectar
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=True)

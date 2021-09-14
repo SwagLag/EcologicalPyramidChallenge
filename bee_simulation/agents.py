@@ -40,7 +40,7 @@ class Nectar(StaticObject):
 
         self.type = "nectar"
 
-    # step is called for each agent in model.BankReservesModel.schedule.step()
+    # step is called for each agent in model.BeeModel.schedule.step()
 
 
 class Hive(StaticObject):
@@ -50,4 +50,4 @@ class Hive(StaticObject):
 
         self.type = "hive"
 
-    # step is called for each agent in model.BankReservesModel.schedule.step()
+    # step is called for each agent in model.BeeModel.schedule.step()
