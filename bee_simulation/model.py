@@ -27,7 +27,8 @@ class BeeSimulation(Model):
             init_flowers=3,
             min_nectar=1,
             max_nectar=1,
-            grd_nectar=3
+            min_grd_nectar=1,
+            max_grd_nectar=3
     ):
         if min_nectar > max_nectar:
             min_nectar = max_nectar
@@ -35,7 +36,9 @@ class BeeSimulation(Model):
         self.width = width
         self.init_people = init_bees
         self.init_nectar = init_flowers
-        self.grades_nectar = [x+1 for x in range(grd_nectar)]
+        self.min_nectar = min_nectar
+        self.max_nectar = max_nectar
+        self.grades_nectar = [x for x in range(min_grd_nectar,max_grd_nectar+1)]
         np.random.shuffle(self.grades_nectar)  # Numpy shuffle can only be done in-place, no assignment necessary.
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=False)
@@ -49,42 +52,38 @@ class BeeSimulation(Model):
         )
 
         # create people for the model according to number of people set by user
-        instance_last_id = 0
+        self.instance_last_id = 0
 
         # Spawn Hives
         hive_loc = self.grid.find_empty()
-        p = Hive(instance_last_id, hive_loc, self)
+        p = Hive(self.instance_last_id, hive_loc, self)
         self.grid.place_agent(p, hive_loc)
         self.schedule.add(p)
         self.running = True
         self.datacollector.collect(self)
-        instance_last_id += 1
+        self.instance_last_id += 1
 
         # Spawn Bees
         for i in range(self.init_people):
             # empty_loc = self.grid.find_empty()
-            p = Bee(instance_last_id, hive_loc, self, False)
+            p = Bee(self.instance_last_id, hive_loc, self, init_flowers, False)
             self.grid.place_agent(p, hive_loc)
             self.schedule.add(p)
-            instance_last_id += 1
+            self.instance_last_id += 1
 
         # Spawn Flowerfields and accompanying Nectar
         for i in range(0, self.init_nectar):
-            flower_loc = self.grid.find_empty()
-            p = Flowerfield(instance_last_id, flower_loc, self)
-            self.grid.place_agent(p, flower_loc)
-            instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
 
             if len(self.grades_nectar) > 0:
                 grade = self.grades_nectar.pop()
             else:
                 grade = 1
 
-            amount = np.random.randint(min_nectar,max_nectar+1)
-            p = Nectar(instance_last_id, flower_loc, self, amount, grade)
+            flower_loc = self.grid.find_empty()
+            p = Flowerfield(self.instance_last_id, flower_loc, self, grade)
             self.grid.place_agent(p, flower_loc)
-            self.schedule.add(p)
-            instance_last_id += 1
+            self.instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
+            p.spawn_nectar()
 
     def step(self):
         # tell all the agents in the model to run their step function
