@@ -27,6 +27,7 @@ class BeeSimulation(Model):
             init_flowers=3,
             min_nectar=1,
             max_nectar=1,
+            grd_nectar=3
     ):
         if min_nectar > max_nectar:
             min_nectar = max_nectar
@@ -34,6 +35,8 @@ class BeeSimulation(Model):
         self.width = width
         self.init_people = init_bees
         self.init_nectar = init_flowers
+        self.grades_nectar = [x+1 for x in range(grd_nectar)]
+        np.random.shuffle(self.grades_nectar)  # Numpy shuffle can only be done in-place, no assignment necessary.
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=False)
 
@@ -72,8 +75,13 @@ class BeeSimulation(Model):
             self.grid.place_agent(p, flower_loc)
             instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
 
+            if len(self.grades_nectar) > 0:
+                grade = self.grades_nectar.pop()
+            else:
+                grade = 1
+
             amount = np.random.randint(min_nectar,max_nectar+1)
-            p = Nectar(instance_last_id, flower_loc, self, amount)
+            p = Nectar(instance_last_id, flower_loc, self, amount, grade)
             self.grid.place_agent(p, flower_loc)
             self.schedule.add(p)
             instance_last_id += 1

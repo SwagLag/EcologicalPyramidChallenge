@@ -12,7 +12,8 @@ class Bee(MovingEntity):
 
         # Private vars
         self.type = "bee"
-        self.nectar_amount = 0
+        self.nectar_amount = 0  # Can only carry 1 for now, but potentially useful for later when we want to increase cap.
+        self.nectar_grade = 0  # Determines scoring value, inferred from picked up nectar.
 
         # Agent parameters
         self.perception_range = 1
@@ -28,8 +29,9 @@ class Bee(MovingEntity):
         # Dropping of Nectar
         for hive in hives:
             if self.pos == hive.pos and self.nectar_amount > 0:
-                self.model.nectar_collected += self.nectar_amount
+                self.model.nectar_collected += self.nectar_amount * self.nectar_grade
                 self.nectar_amount = 0
+                self.nectar_grade = 0  # Safety precaution.
 
         # Collection of Nectar
         for nectar in nectars:
@@ -42,6 +44,7 @@ class Bee(MovingEntity):
                     else:
                         self.nectar_amount += 1
                         nectar.amount -= 1
+                    self.nectar_grade = nectar.grade
 
 
     def update_world_knowledge(self, verbose=False):
@@ -123,10 +126,11 @@ class Flowerfield(StaticObject):
 
 
 class Nectar(StaticObject):
-    def __init__(self, unique_id, pos, model, amount):
+    def __init__(self, unique_id, pos, model, amount, grade):
         super().__init__(unique_id, pos, model)
         self.type = "nectar"
-        self.amount = amount
+        self.amount = amount  # Determines the amount of Nectar available and thus the amount of trips a bee can make
+        self.grade = grade  # Determines the scoring value of the Nectar for bringint it back to a beehive
 
 
 class Hive(StaticObject):

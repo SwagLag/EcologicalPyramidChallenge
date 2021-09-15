@@ -35,7 +35,7 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 1
         portrayal["Filled"] = "true"
         portrayal["Color"] = NECTAR_COLOR
-        portrayal["text"] = agent.amount
+        portrayal["text"] = "g:{}, a:{}".format(agent.grade, agent.amount)
         portrayal["text_color"] = "Black"
 
     if isinstance(agent, Hive):
