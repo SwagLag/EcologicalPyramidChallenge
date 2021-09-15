@@ -24,10 +24,12 @@ class BeeSimulation(Model):
             height=grid_h,
             width=grid_w,
             init_bees=1,
-            init_flowers=1,
+            init_flowers=3,
             min_nectar=1,
             max_nectar=1,
     ):
+        if min_nectar > max_nectar:
+            min_nectar = max_nectar
         self.height = height
         self.width = width
         self.init_people = init_bees

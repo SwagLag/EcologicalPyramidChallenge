@@ -59,12 +59,12 @@ def agent_portrayal(agent):
 
 # dictionary of user settable parameters - these map to the model __init__ parameters
 model_params = {
-    "init_bees": UserSettableParameter(
-        "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
-    ),
-    "init_flowers": UserSettableParameter(
-        "slider", "Flowerfields", 3, 1, 30, description="Initial Number of Flowerfields and accompanying Nectar"
-    ),
+    # "init_bees": UserSettableParameter(
+    #     "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
+    # ),
+    # "init_flowers": UserSettableParameter(
+    #     "slider", "Flowerfields", 3, 1, 30, description="Initial Number of Flowerfields and accompanying Nectar"
+    # ),
     "min_nectar": UserSettableParameter(
         "slider", "Minimum Nectar", 1, 1, 3, description="Minimum nectar available in flowerfields"
     ),
