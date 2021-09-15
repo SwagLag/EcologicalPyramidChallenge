@@ -108,9 +108,13 @@ class Bee(MovingEntity):
             if len(np.argwhere(self.grid_memory == 'n')) != 0:
                 print("fetch_closest_nectar")
                 self.fetch_closest_nectar()
+            elif len(np.argwhere(self.grid_memory == '')) == 0:
+                print("return_to_hive")
+                self.return_to_hive()
             else:
                 print("explore")
                 self.explore()
+
 
 class Flowerfield(StaticObject):
     def __init__(self, unique_id, pos, model):
