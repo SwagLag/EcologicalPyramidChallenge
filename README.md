@@ -7,9 +7,6 @@ Een simulatie die de verzameling van nectar door bijen simuleert.
 Trello Scrumbord: \
 https://trello.com/b/jLrjxNfY/sprint-1-adb
 
-Projectverslag: \
-{LINK}
-
 # Agent
 
 PENDING!
