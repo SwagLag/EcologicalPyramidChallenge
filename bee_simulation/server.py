@@ -53,7 +53,7 @@ model_params = {
     ),
     "init_nectar": UserSettableParameter(
         "slider", "Nectar", 10, 1, 30, description="Initial Number of Nectar"
-    ),
+    )
 }
 
 # set the portrayal function and size of the canvas for visualization

@@ -45,9 +45,9 @@ class BeeSimulation(Model):
         instance_last_id = 0
 
         # Spawn Hives
-        empty_loc = self.grid.find_empty()
-        p = Hive(instance_last_id, empty_loc, self)
-        self.grid.place_agent(p, empty_loc)
+        hive_loc = self.grid.find_empty()
+        p = Hive(instance_last_id, hive_loc, self)
+        self.grid.place_agent(p, hive_loc)
         self.schedule.add(p)
         self.running = True
         self.datacollector.collect(self)
@@ -55,9 +55,9 @@ class BeeSimulation(Model):
 
         # Spawn Bees
         for i in range(self.init_people):
-            empty_loc = self.grid.find_empty()
-            p = Bee(instance_last_id, empty_loc, self, False)
-            self.grid.place_agent(p, empty_loc)
+            # empty_loc = self.grid.find_empty()
+            p = Bee(instance_last_id, hive_loc, self, True)
+            self.grid.place_agent(p, hive_loc)
             self.schedule.add(p)
             instance_last_id += 1
 

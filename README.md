@@ -2,12 +2,13 @@
 
 Een simulatie die de verzameling van nectar door bijen simuleert.
 
-Het idee van de simulatie om
-
 # Project documenten
 
-JIRA Scrumbord:
+Trello Scrumbord: \
 https://trello.com/b/jLrjxNfY/sprint-1-adb
+
+Projectverslag: \
+{LINK}
 
 # Agent
 
