@@ -1,13 +1,14 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule
 from mesa.visualization.UserParam import UserSettableParameter
-from bee_simulation.agents import Bee, Nectar, Hive
+from bee_simulation.agents import Bee, Nectar, Hive, Flowerfield
 from bee_simulation.model import BeeSimulation
 
 # Green
 BEE_COLOR = "#000000"
 NECTAR_COLOR = "#FFA500"
 HIVE_COLOR = "#964B00"
+FLOWERFIELD_COLOR = "#008000"
 
 
 def agent_portrayal(agent):
@@ -20,7 +21,7 @@ def agent_portrayal(agent):
     if isinstance(agent, Bee):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.5
-        portrayal["Layer"] = 2
+        portrayal["Layer"] = 3
         portrayal["Filled"] = "true"
 
         if agent.has_nectar:
@@ -31,7 +32,7 @@ def agent_portrayal(agent):
     if isinstance(agent, Nectar):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.3
-        portrayal["Layer"] = 0
+        portrayal["Layer"] = 1
         portrayal["Filled"] = "true"
         portrayal["Color"] = NECTAR_COLOR
 
@@ -39,9 +40,17 @@ def agent_portrayal(agent):
         portrayal["Shape"] = "rect"
         portrayal["w"] = 0.5
         portrayal['h'] = 0.5
-        portrayal["Layer"] = 1
+        portrayal["Layer"] = 2
         portrayal["Filled"] = "true"
         portrayal["Color"] = HIVE_COLOR
+
+    if isinstance(agent, Flowerfield):
+        portrayal["Shape"] = "rect"
+        portrayal["w"] = 0.4
+        portrayal['h'] = 0.4
+        portrayal["Layer"] = 0
+        portrayal["Filled"] = "true"
+        portrayal["Color"] = FLOWERFIELD_COLOR
 
     return portrayal
 
@@ -52,7 +61,7 @@ model_params = {
         "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
     ),
     "init_nectar": UserSettableParameter(
-        "slider", "Nectar", 10, 1, 30, description="Initial Number of Nectar"
+        "slider", "Nectar", 3, 1, 30, description="Initial Number of Nectar"
     )
 }
 

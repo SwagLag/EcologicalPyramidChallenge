@@ -107,6 +107,11 @@ class Bee(MovingEntity):
                 print("explore")
                 self.explore()
 
+class Flowerfield(StaticObject):
+    def __init__(self, unique_id, pos, model):
+        super().__init__(unique_id, pos, model)
+        self.type = "flowerfield"
+
 
 class Nectar(StaticObject):
     def __init__(self, unique_id, pos, model):

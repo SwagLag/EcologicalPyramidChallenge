@@ -1,10 +1,10 @@
-from bee_simulation.agents import Bee, Nectar, Hive
+from bee_simulation.agents import Bee, Nectar, Hive, Flowerfield
 from mesa import Model
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 from mesa.time import RandomActivation
 
-
+import numpy as np
 # Start of datacollector functions
 def get_nectar_collected(model):
     return model.nectar_collected
@@ -24,7 +24,9 @@ class BeeSimulation(Model):
             height=grid_h,
             width=grid_w,
             init_bees=1,
-            init_nectar=1
+            init_nectar=1,
+            min_nectar=1,
+            max_nectar=1,
     ):
         self.height = height
         self.width = width
@@ -56,16 +58,20 @@ class BeeSimulation(Model):
         # Spawn Bees
         for i in range(self.init_people):
             # empty_loc = self.grid.find_empty()
-            p = Bee(instance_last_id, hive_loc, self, True)
+            p = Bee(instance_last_id, hive_loc, self, False)
             self.grid.place_agent(p, hive_loc)
             self.schedule.add(p)
             instance_last_id += 1
 
-        # Spawn Nectar
+        # Spawn Flowerfields and accompanying Nectar
         for i in range(0, self.init_nectar):
-            empty_loc = self.grid.find_empty()
-            p = Nectar(instance_last_id, empty_loc, self)
-            self.grid.place_agent(p, empty_loc)
+            flower_loc = self.grid.find_empty()
+            p = Flowerfield(instance_last_id, flower_loc, self)
+            self.grid.place_agent(p, flower_loc)
+            instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
+
+            p = Nectar(instance_last_id, flower_loc, self)
+            self.grid.place_agent(p, flower_loc)
             self.schedule.add(p)
             instance_last_id += 1
 
