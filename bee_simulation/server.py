@@ -24,7 +24,7 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 3
         portrayal["Filled"] = "true"
 
-        if agent.has_nectar:
+        if agent.nectar_amount:
             portrayal["Color"] = "Black"
         else:
             portrayal["Color"] = "Gray"
@@ -35,6 +35,8 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 1
         portrayal["Filled"] = "true"
         portrayal["Color"] = NECTAR_COLOR
+        portrayal["text"] = agent.amount
+        portrayal["text_color"] = "Black"
 
     if isinstance(agent, Hive):
         portrayal["Shape"] = "rect"
@@ -60,8 +62,14 @@ model_params = {
     "init_bees": UserSettableParameter(
         "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
     ),
-    "init_nectar": UserSettableParameter(
-        "slider", "Nectar", 3, 1, 30, description="Initial Number of Nectar"
+    "init_flowers": UserSettableParameter(
+        "slider", "Flowerfields", 3, 1, 30, description="Initial Number of Flowerfields and accompanying Nectar"
+    ),
+    "min_nectar": UserSettableParameter(
+        "slider", "Minimum Nectar", 1, 1, 3, description="Minimum nectar available in flowerfields"
+    ),
+    "max_nectar": UserSettableParameter(
+        "slider", "Maximum Nectar", 3, 1, 5, description="Maximum nectar available in flowerfields"
     )
 }
 

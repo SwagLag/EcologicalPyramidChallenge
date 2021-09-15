@@ -12,7 +12,7 @@ class Bee(MovingEntity):
 
         # Private vars
         self.type = "bee"
-        self.has_nectar = False
+        self.nectar_amount = 0
 
         # Agent parameters
         self.perception_range = 1
@@ -27,17 +27,22 @@ class Bee(MovingEntity):
         hives = [a for a in self.model.grid[self.pos] if a.type == "hive"]
         # Dropping of Nectar
         for hive in hives:
-            if self.pos == hive.pos and self.has_nectar == True:
-                self.has_nectar = False
-                self.model.nectar_collected += 1
+            if self.pos == hive.pos and self.nectar_amount > 0:
+                self.model.nectar_collected += self.nectar_amount
+                self.nectar_amount = 0
 
         # Collection of Nectar
         for nectar in nectars:
             if self.pos == nectar.pos:
-                if self.has_nectar == False:
-                    self.model.grid.remove_agent(nectar)
-                    self.has_nectar = True
-                    self.grid_memory[self.pos] = 'o'
+                if self.nectar_amount <= 0:  # Collect Nectar if not loaded (Support for carrying more nectar at once later)
+                    if nectar.amount <= 1:
+                        self.nectar_amount += 1
+                        self.model.grid.remove_agent(nectar)
+                        self.grid_memory[self.pos] = 'o'
+                    else:
+                        self.nectar_amount += 1
+                        nectar.amount -= 1
+
 
     def update_world_knowledge(self, verbose=False):
         perception = self.model.grid.get_neighborhood(self.pos, self.moore, include_center=True,
@@ -96,7 +101,7 @@ class Bee(MovingEntity):
         self.handle_nectar()
         self.update_world_knowledge(verbose=True)
 
-        if self.has_nectar:
+        if self.nectar_amount > 0:
             print("return_to_hive")
             self.return_to_hive()
         else:
@@ -114,9 +119,10 @@ class Flowerfield(StaticObject):
 
 
 class Nectar(StaticObject):
-    def __init__(self, unique_id, pos, model):
+    def __init__(self, unique_id, pos, model, amount):
         super().__init__(unique_id, pos, model)
         self.type = "nectar"
+        self.amount = amount
 
 
 class Hive(StaticObject):

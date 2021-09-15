@@ -24,14 +24,14 @@ class BeeSimulation(Model):
             height=grid_h,
             width=grid_w,
             init_bees=1,
-            init_nectar=1,
+            init_flowers=1,
             min_nectar=1,
             max_nectar=1,
     ):
         self.height = height
         self.width = width
         self.init_people = init_bees
-        self.init_nectar = init_nectar
+        self.init_nectar = init_flowers
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=False)
 
@@ -70,7 +70,8 @@ class BeeSimulation(Model):
             self.grid.place_agent(p, flower_loc)
             instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
 
-            p = Nectar(instance_last_id, flower_loc, self)
+            amount = np.random.randint(min_nectar,max_nectar+1)
+            p = Nectar(instance_last_id, flower_loc, self, amount)
             self.grid.place_agent(p, flower_loc)
             self.schedule.add(p)
             instance_last_id += 1
