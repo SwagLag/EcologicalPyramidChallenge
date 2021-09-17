@@ -1,7 +1,7 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule
 from mesa.visualization.UserParam import UserSettableParameter
-from bee_simulation.agents import Bee, Nectar, Hive, Flowerfield
+from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from bee_simulation.model import BeeSimulation
 
 # Green
@@ -24,7 +24,7 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 3
         portrayal["Filled"] = "true"
 
-        if agent.nectar_amount:
+        if len(agent.nectar_collected) > 0:
             portrayal["Color"] = "Black"
         else:
             portrayal["Color"] = "Gray"
@@ -35,7 +35,7 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 1
         portrayal["Filled"] = "true"
         portrayal["Color"] = NECTAR_COLOR
-        portrayal["text"] = agent.amount
+        portrayal["text"] = f"a:{agent.amount},g:{agent.grade}"
         portrayal["text_color"] = "Black"
 
     if isinstance(agent, Hive):
@@ -46,7 +46,7 @@ def agent_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = HIVE_COLOR
 
-    if isinstance(agent, Flowerfield):
+    if isinstance(agent, FlowerField):
         portrayal["Shape"] = "rect"
         portrayal["w"] = 0.4
         portrayal['h'] = 0.4
@@ -70,6 +70,9 @@ model_params = {
     ),
     "max_nectar": UserSettableParameter(
         "slider", "Maximum Nectar", 3, 1, 5, description="Maximum nectar available in flowerfields"
+    ),
+    "init_max_nectar_grade": UserSettableParameter(
+        "slider", "Maximum Nectar Grade", 3, 1, 10, description="Maximum nectar grade"
     )
 }
 

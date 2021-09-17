@@ -1,4 +1,4 @@
-from bee_simulation.agents import Bee, Nectar, Hive, Flowerfield
+from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from mesa import Model
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
@@ -25,6 +25,7 @@ class BeeSimulation(Model):
             width=grid_w,
             init_bees=1,
             init_flowers=3,
+            init_max_nectar_grade=3,
             min_nectar=1,
             max_nectar=1,
     ):
@@ -32,8 +33,13 @@ class BeeSimulation(Model):
             min_nectar = max_nectar
         self.height = height
         self.width = width
+
+        # Server parameters
         self.init_people = init_bees
         self.init_nectar = init_flowers
+        self.init_nectar_grade = init_max_nectar_grade
+
+
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=False)
 
@@ -68,12 +74,13 @@ class BeeSimulation(Model):
         # Spawn Flowerfields and accompanying Nectar
         for i in range(0, self.init_nectar):
             flower_loc = self.grid.find_empty()
-            p = Flowerfield(instance_last_id, flower_loc, self)
+            grade = np.random.randint(1, init_max_nectar_grade + 1)
+            p = FlowerField(instance_last_id, flower_loc, self, grade)
             self.grid.place_agent(p, flower_loc)
             instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
 
             amount = np.random.randint(min_nectar,max_nectar+1)
-            p = Nectar(instance_last_id, flower_loc, self, amount)
+            p = Nectar(instance_last_id, flower_loc, self, amount, p.grade)
             self.grid.place_agent(p, flower_loc)
             self.schedule.add(p)
             instance_last_id += 1

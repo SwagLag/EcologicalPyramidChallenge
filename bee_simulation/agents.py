@@ -1,3 +1,5 @@
+import random
+
 from bee_simulation.movement import MovingEntity
 from bee_simulation.static_object import StaticObject
 
@@ -12,7 +14,7 @@ class Bee(MovingEntity):
 
         # Private vars
         self.type = "bee"
-        self.nectar_amount = 0
+        self.nectar_collected = []
 
         # Agent parameters
         self.perception_range = 1
@@ -27,20 +29,20 @@ class Bee(MovingEntity):
         hives = [a for a in self.model.grid[self.pos] if a.type == "hive"]
         # Dropping of Nectar
         for hive in hives:
-            if self.pos == hive.pos and self.nectar_amount > 0:
-                self.model.nectar_collected += self.nectar_amount
-                self.nectar_amount = 0
+            if self.pos == hive.pos and len(self.nectar_collected) > 0:
+                for n in self.nectar_collected:
+                    self.model.nectar_collected += n
+                self.nectar_collected = []
 
         # Collection of Nectar
         for nectar in nectars:
             if self.pos == nectar.pos:
-                if self.nectar_amount <= 0:  # Collect Nectar if not loaded (Support for carrying more nectar at once later)
-                    if nectar.amount <= 1:
-                        self.nectar_amount += 1
+                if len(self.nectar_collected) == 0:
+                    self.nectar_collected.append(nectar.grade)
+                    if nectar.amount == 1:
                         self.model.grid.remove_agent(nectar)
                         self.grid_memory[self.pos] = 'o'
                     else:
-                        self.nectar_amount += 1
                         nectar.amount -= 1
 
 
@@ -71,37 +73,40 @@ class Bee(MovingEntity):
         else:
             print(f"move_to_target error,current_position:{self.pos}, target:{target_pos}")
 
-    def _calc_distance(self, target_pos):
-        return abs(self.pos[0] - target_pos[0]) + abs(self.pos[1] - target_pos[1])
+    def _calc_distance(self, origin, target_pos):
+        return abs(origin.pos[0] - target_pos[0]) + abs(origin.pos[1] - target_pos[1])
 
-    def _calc_closest_of_list(self, target_positions):
+    def _calc_closest_of_list(self, origin, target_positions):
         best = {"pos": (0, 0), "distance": 100000000}
         for pos in target_positions:
-            d = self._calc_distance(pos)
+            d = origin._calc_distance(origin, pos)
             if d < best['distance']:
                 best['distance'] = d
                 best['pos'] = pos
         return best['pos']
 
     def return_to_hive(self):
-        hives = [a.pos for a in self.model.schedule.agents if a.type == "hive" and a.pos is not None]
-        self.move_to_target(self._calc_closest_of_list(hives))
+        # hives = [a.pos for a in self.model.schedule.agents if a.type == "hive" and a.pos is not None]
+        hives = np.argwhere(self.grid_memory == 'x')
+        self.move_to_target(self._calc_closest_of_list(self, hives))
 
     def fetch_closest_nectar(self):
         # nectar = [a.pos for a in self.model.schedule.agents if a.type == "nectar" and a.pos != None]
         nectar = np.argwhere(self.grid_memory == 'n')
-        self.move_to_target(self._calc_closest_of_list(nectar))
+        self.move_to_target(self._calc_closest_of_list(self, nectar))
 
     def explore(self):
         unexplored = np.argwhere(self.grid_memory == '')
-        self.move_to_target(self._calc_closest_of_list(unexplored))
+        self.move_to_target(self._calc_closest_of_list(self, unexplored))
 
-    # step is called for each agent in model.BeeModel.schedule.step()
+    def plan_rational_move(self):
+        pass
+
     def step(self):
         self.handle_nectar()
         self.update_world_knowledge(verbose=True)
 
-        if self.nectar_amount > 0:
+        if len(self.nectar_collected) > 0:
             print("return_to_hive")
             self.return_to_hive()
         else:
@@ -116,17 +121,19 @@ class Bee(MovingEntity):
                 self.explore()
 
 
-class Flowerfield(StaticObject):
-    def __init__(self, unique_id, pos, model):
+class FlowerField(StaticObject):
+    def __init__(self, unique_id, pos, model, max_nectar_grade):
         super().__init__(unique_id, pos, model)
         self.type = "flowerfield"
+        self.grade = random.randrange(1, max_nectar_grade+1)
 
 
 class Nectar(StaticObject):
-    def __init__(self, unique_id, pos, model, amount):
+    def __init__(self, unique_id, pos, model, amount, grade):
         super().__init__(unique_id, pos, model)
         self.type = "nectar"
         self.amount = amount
+        self.grade = grade
 
 
 class Hive(StaticObject):
