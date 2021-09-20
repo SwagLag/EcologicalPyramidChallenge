@@ -1,4 +1,5 @@
 import numpy as np
+import bee_simulation.actions as actions
 
 def update_memory(agent, perception, show_grid=False):
     for tile in perception:

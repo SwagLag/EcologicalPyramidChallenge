@@ -12,20 +12,22 @@ def move_to_target(agent, target_pos):
         agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] - 1))
     elif target_pos[1] > agent.pos[1]:
         agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] + 1))
+    elif target_pos[0] == agent.pos[0] and target_pos[1] == agent.pos[1]:
+        print("move_to_target origin same as target")
     else:
-        print(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
+        exit(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
 
 def return_to_hive(agent):
     hives = np.argwhere(agent.grid_memory == 'x')
-    return move_to_target(agent.pos, calc_closest_of_list(agent, hives))
+    return move_to_target(agent, calc_closest_of_list(agent.pos, hives))
 
 def fetch_closest_nectar(agent):
     nectar = np.argwhere(agent.grid_memory == 'n')
-    return move_to_target(agent.pos, calc_closest_of_list(agent, nectar))
+    return move_to_target(agent, calc_closest_of_list(agent.pos, nectar))
 
 def explore(agent):
     unexplored = np.argwhere(agent.grid_memory == '')
-    return move_to_target(agent.pos, calc_closest_of_list(agent, unexplored))
+    return move_to_target(agent, calc_closest_of_list(agent.pos, unexplored))
 
 def handle_nectar(agent):
     nectars = [a for a in agent.model.grid[agent.pos] if a.type == "nectar"]

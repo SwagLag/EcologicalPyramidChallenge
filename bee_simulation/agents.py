@@ -5,7 +5,7 @@ from bee_simulation.static_object import StaticObject
 
 import bee_simulation.perception as perception
 import bee_simulation.logic as logic
-from bee_simulation.actions import *
+import bee_simulation.actions as actions
 
 import numpy as np
 
@@ -20,6 +20,13 @@ class Bee(MovingEntity):
         self.type = "bee"
         self.nectar_collected = []
 
+        # State
+        self.state = "return_to_hive"
+        # Options are:
+        # - return_to_hive
+        # - fetch_closest_nectar
+        # - explore
+
         # Agent parameters
         self.perception_range = 1
 
@@ -29,12 +36,20 @@ class Bee(MovingEntity):
             self.grid_memory[hive.pos] = "x"
 
     def step(self):
+        actions.handle_nectar(self)
         logic.update_memory(self, perception.percept(self))
-        action = logic.plan_rational_move(self)
+        self.state = logic.plan_rational_move(self)
 
-        handle_nectar(self)
+        print(f"Current State: {self.state}")
 
-        exec(action)
+        if self.state == "return_to_hive":
+            actions.return_to_hive(self)
+        elif self.state == "fetch_closest_nectar":
+            actions.fetch_closest_nectar(self)
+        elif self.state == "explore":
+            actions.explore(self)
+        else:
+            exit(f"Invalid State: {self.state}")
 
 class FlowerField(StaticObject):
     def __init__(self, unique_id, pos, model, max_nectar_grade):
