@@ -73,7 +73,21 @@ model_params = {
     ),
     "init_max_nectar_grade": UserSettableParameter(
         "slider", "Maximum Nectar Grade", 3, 1, 10, description="Maximum nectar grade"
-    )
+    ),
+    "behaviourprobability": UserSettableParameter(
+        "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
+                                                                       "explore instead of going for the clue,"
+                                                                       "the inverse (1-%) for going for the clue"
+                                                                       "first."
+    ),
+    "beedanceinaccuracy": UserSettableParameter(
+        "slider", "Bee Dance Inaccuracy", 3, 0, 8, description="Radius in which a given clue can generate in from"
+                                                               "a nectar's actual position."
+    ),
+    "beepatience": UserSettableParameter(
+        "slider", "Bee Search Duration", 8, 0, 8, description="Time steps that the bee will spend searching before"
+                                                              "giving up and returning to a default explore state."
+    ),
 }
 
 # set the portrayal function and size of the canvas for visualization

@@ -6,11 +6,9 @@ from mesa.time import RandomActivation
 
 import numpy as np
 
-
 # Start of datacollector functions
 def get_nectar_collected(model):
     return model.nectar_collected
-
 
 class BeeSimulation(Model):
     # grid height
@@ -30,6 +28,9 @@ class BeeSimulation(Model):
             init_max_nectar_grade=3,
             min_nectar=1,
             max_nectar=1,
+            behaviourprobability=50,
+            beedanceinaccuracy=3,
+            beepatience=8
     ):
         if min_nectar > max_nectar:
             min_nectar = max_nectar
@@ -40,6 +41,11 @@ class BeeSimulation(Model):
         self.init_people = init_bees
         self.init_nectar = init_flowers
         self.init_nectar_grade = init_max_nectar_grade
+
+        # Agent parameters
+        self.behaviourprobability = behaviourprobability
+        self.beedanceinaccuracy = beedanceinaccuracy
+        self.beepatience = beepatience
 
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=False)
