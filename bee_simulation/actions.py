@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 from bee_simulation import logic
@@ -40,6 +42,15 @@ def explore2(agent):
     return move_to_target(agent, best_pos)
 
 
+def bee_dance(agent):
+    nectar = np.argwhere(agent.grid_memory == 'n')
+    clue_loc = False
+    if len(nectar) > 0:
+        clue_loc = random.choice(nectar)
+
+    agent.model.swap_bee(agent, agent.hive_pos, clue_loc)
+    agent.state = "dormant"
+
 def handle_nectar(agent):
     nectars = [a for a in agent.model.grid[agent.pos] if a.type == "nectar"]
     hives = [a for a in agent.model.grid[agent.pos] if a.type == "hive"]
@@ -49,6 +60,7 @@ def handle_nectar(agent):
             for n in agent.nectar_collected:
                 agent.model.nectar_collected += n
             agent.nectar_collected = []
+            bee_dance(agent)
 
     # Collection of Nectar
     for nectar in nectars:

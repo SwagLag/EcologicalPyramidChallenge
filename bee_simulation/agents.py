@@ -27,6 +27,7 @@ class Bee(MovingEntity):
         # - return_to_hive
         # - fetch_closest_nectar
         # - explore
+        # - dormant
 
         # Agent parameters
         self.perception_range = 1
@@ -35,27 +36,30 @@ class Bee(MovingEntity):
         self.grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
         for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
             self.grid_memory[hive.pos] = "x"
-            hive_pos = hive.pos
+            self.hive_pos = hive.pos
 
         # Grid values
-        self.grid_values = helpers.generate_grid_values(model, hive_pos, init=True)
+        self.grid_values = helpers.generate_grid_values(model, self.hive_pos, update=False)
 
     def step(self):
-        # print(np.rot90(self.grid_values))
-        actions.handle_nectar(self)
-        logic.update_memory(self, perception.percept(self))
-        self.state = logic.plan_rational_move2(self)
+        if self.state is not "dormant":
+            # print(np.rot90(self.grid_values))
+            actions.handle_nectar(self)
+            if self.state == "dormant":
+                return
+            logic.update_memory(self, perception.percept(self))
+            self.state = logic.plan_rational_move2(self)
 
-        print(f"Current State: {self.state}")
+            print(f"Current State: {self.state}")
 
-        if self.state == "return_to_hive":
-            actions.return_to_hive(self)
-        elif self.state == "fetch_closest_nectar":
-            actions.fetch_closest_nectar(self)
-        elif self.state == "explore":
-            actions.explore2(self)
-        else:
-            exit(f"Invalid State: {self.state}")
+            if self.state == "return_to_hive":
+                actions.return_to_hive(self)
+            elif self.state == "fetch_closest_nectar":
+                actions.fetch_closest_nectar(self)
+            elif self.state == "explore":
+                actions.explore2(self)
+            else:
+                exit(f"Invalid State: {self.state}")
 
 
 class FlowerField(StaticObject):
