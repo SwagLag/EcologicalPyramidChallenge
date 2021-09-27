@@ -1,4 +1,6 @@
 import numpy as np
+
+from bee_simulation import logic
 from bee_simulation.helpers import calc_distance, calc_closest_of_list
 
 
@@ -17,17 +19,26 @@ def move_to_target(agent, target_pos):
     else:
         exit(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
 
+
 def return_to_hive(agent):
     hives = np.argwhere(agent.grid_memory == 'x')
     return move_to_target(agent, calc_closest_of_list(agent.pos, hives))
+
 
 def fetch_closest_nectar(agent):
     nectar = np.argwhere(agent.grid_memory == 'n')
     return move_to_target(agent, calc_closest_of_list(agent.pos, nectar))
 
+
 def explore(agent):
     unexplored = np.argwhere(agent.grid_memory == '')
     return move_to_target(agent, calc_closest_of_list(agent.pos, unexplored))
+
+
+def explore2(agent):
+    best_pos = logic.calc_values_of_list(agent.model, agent.pos, np.ndindex(agent.grid_values.shape), agent.grid_values, agent.grid_memory)
+    return move_to_target(agent, best_pos)
+
 
 def handle_nectar(agent):
     nectars = [a for a in agent.model.grid[agent.pos] if a.type == "nectar"]

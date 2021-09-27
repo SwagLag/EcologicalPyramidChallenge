@@ -6,6 +6,7 @@ from bee_simulation.static_object import StaticObject
 import bee_simulation.perception as perception
 import bee_simulation.logic as logic
 import bee_simulation.actions as actions
+import bee_simulation.helpers as helpers
 
 import numpy as np
 
@@ -34,11 +35,16 @@ class Bee(MovingEntity):
         self.grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
         for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
             self.grid_memory[hive.pos] = "x"
+            hive_pos = hive.pos
+
+        # Grid values
+        self.grid_values = helpers.generate_grid_values(model, hive_pos, init=True)
 
     def step(self):
+        # print(np.rot90(self.grid_values))
         actions.handle_nectar(self)
         logic.update_memory(self, perception.percept(self))
-        self.state = logic.plan_rational_move(self)
+        self.state = logic.plan_rational_move2(self)
 
         print(f"Current State: {self.state}")
 
@@ -47,15 +53,16 @@ class Bee(MovingEntity):
         elif self.state == "fetch_closest_nectar":
             actions.fetch_closest_nectar(self)
         elif self.state == "explore":
-            actions.explore(self)
+            actions.explore2(self)
         else:
             exit(f"Invalid State: {self.state}")
+
 
 class FlowerField(StaticObject):
     def __init__(self, unique_id, pos, model, max_nectar_grade):
         super().__init__(unique_id, pos, model)
         self.type = "flowerfield"
-        self.grade = random.randrange(1, max_nectar_grade+1)
+        self.grade = random.randrange(1, max_nectar_grade + 1)
 
 
 class Nectar(StaticObject):
