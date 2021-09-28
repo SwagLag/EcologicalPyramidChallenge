@@ -62,32 +62,38 @@ model_params = {
     # "init_bees": UserSettableParameter(
     #     "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
     # ),
-    # "init_flowers": UserSettableParameter(
-    #     "slider", "Flowerfields", 3, 1, 30, description="Initial Number of Flowerfields and accompanying Nectar"
-    # ),
+    "init_flowers": UserSettableParameter(
+        "slider", "# of Flowerfields", 5, 1, 20, description="Number of flower fields"
+    ),
     "min_nectar": UserSettableParameter(
-        "slider", "Minimum Nectar", 2, 1, 10, description="Minimum nectar available in flowerfields"
+        "slider", "Initial Minimum # of Nectar", 2, 1, 10, description="Minimum nectar available in flowerfields"
     ),
     "max_nectar": UserSettableParameter(
-        "slider", "Maximum Nectar", 4, 1, 10, description="Maximum nectar available in flowerfields"
+        "slider", "Initial Maximum # of Nectar", 4, 1, 10, description="Maximum nectar available in flowerfields"
+    ),
+    "init_min_nectar_grade": UserSettableParameter(
+        "slider", "Minimum Nectar Grade", 5, 5, 100, description="Minimum nectar grade"
     ),
     "init_max_nectar_grade": UserSettableParameter(
         "slider", "Maximum Nectar Grade", 30, 10, 100, description="Maximum nectar grade"
     ),
-    "behaviourprobability": UserSettableParameter(
-        "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
-                                                                       "explore instead of going for the clue,"
-                                                                       "the inverse (1-%) for going for the clue"
-                                                                       "first."
+    "nectar_respawn_interval": UserSettableParameter(
+        "slider", "Nectar respawn interval", 75, 10, 200, description="Nectar respawn interval"
     ),
-    "beedanceinaccuracy": UserSettableParameter(
-        "slider", "Bee Dance Inaccuracy", 3, 0, 8, description="Radius in which a given clue can generate in from"
-                                                               "a nectar's actual position."
-    ),
-    "beepatience": UserSettableParameter(
-        "slider", "Bee Search Duration", 8, 0, 8, description="Time steps that the bee will spend searching before"
-                                                              "giving up and returning to a default explore state."
-    ),
+    # "behaviourprobability": UserSettableParameter(
+    #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
+    #                                                                    "explore instead of going for the clue,"
+    #                                                                    "the inverse (1-%) for going for the clue"
+    #                                                                    "first."
+    # ),
+    # "beedanceinaccuracy": UserSettableParameter(
+    #     "slider", "Bee Dance Inaccuracy", 3, 0, 8, description="Radius in which a given clue can generate in from"
+    #                                                            "a nectar's actual position."
+    # ),
+    # "beepatience": UserSettableParameter(
+    #     "slider", "Bee Search Duration", 8, 0, 8, description="Time steps that the bee will spend searching before"
+    #                                                           "giving up and returning to a default explore state."
+    # ),
 }
 
 # set the portrayal function and size of the canvas for visualization

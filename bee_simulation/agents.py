@@ -11,10 +11,8 @@ import bee_simulation.helpers as helpers
 import numpy as np
 
 
-# subclass of RandomWalker, which is subclass to Mesa Agent
 class Bee(MovingEntity):
     def __init__(self, unique_id, pos, model, moore):
-        # init parent class with required parameters
         super().__init__(unique_id, pos, model, moore=moore)
 
         # Agent parameters
@@ -31,7 +29,7 @@ class Bee(MovingEntity):
         self.state = "return_to_hive"
         # Options are:
         # - return_to_hive
-        # - fetch_closest_nectar
+        # - fetch_closest_nectar <- legacy state
         # - explore
 
         # Init grid memory
@@ -63,8 +61,8 @@ class Bee(MovingEntity):
 
         if self.state == "return_to_hive":
             actions.return_to_hive(self)
-        elif self.state == "fetch_closest_nectar":
-            actions.fetch_closest_nectar(self)
+        # elif self.state == "fetch_closest_nectar":
+        #     actions.fetch_closest_nectar(self)
         elif self.state == "explore":
             grid_scores = logic.calc_grid_scores(self)
             np.set_printoptions(precision=3, suppress=True)
@@ -76,11 +74,11 @@ class Bee(MovingEntity):
 
 
 class FlowerField(StaticObject):
-    def __init__(self, unique_id, pos, model, max_nectar_grade):
+    def __init__(self, unique_id, pos, model, max_nectar_grade, respawn_interval):
         super().__init__(unique_id, pos, model)
         self.type = "flowerfield"
         self.grade = random.randrange(1, max_nectar_grade + 1)
-        self.respawn_interval = 75
+        self.respawn_interval = respawn_interval
         self.steps_left_for_respawn = self.respawn_interval
 
     def step(self) -> None:
@@ -111,5 +109,3 @@ class Hive(StaticObject):
         super().__init__(unique_id, pos, model)
         self.type = "hive"
         self.energy = 20
-
-    # step is called for each agent in model.BeeModel.schedule.step()

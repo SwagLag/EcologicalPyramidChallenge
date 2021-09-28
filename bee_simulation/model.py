@@ -1,4 +1,3 @@
-from bee_simulation import helpers
 from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from mesa import Model
 from mesa.space import MultiGrid
@@ -32,33 +31,25 @@ class BeeSimulation(Model):
     """init parameters "init_people", "rich_threshold", and "reserve_percent"
        are all UserSettableParameters"""
 
-    def __init__(
-            self,
-            height=grid_h,
-            width=grid_w,
-            init_bees=1,
-            init_flowers=6,
-            init_max_nectar_grade=30,
-            min_nectar=1,
-            max_nectar=1,
-            behaviourprobability=50,
-            beedanceinaccuracy=3,
-            beepatience=8
-    ):
-        if min_nectar > max_nectar:
-            min_nectar = max_nectar
+    def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
+                 init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50):
+
+        super().__init__()
         self.height = height
         self.width = width
 
         # Server parameters
-        self.init_people = init_bees
-        self.init_nectar = init_flowers
+        min_nectar = min_nectar
+        if min_nectar > max_nectar:
+            min_nectar = max_nectar
+        self.init_bees = init_bees
+        self.init_flowers = init_flowers
         self.init_nectar_grade = init_max_nectar_grade
 
         # Agent parameters
-        self.behaviourprobability = behaviourprobability
-        self.beedanceinaccuracy = beedanceinaccuracy
-        self.beepatience = beepatience
+        # self.behaviourprobability = behaviourprobability
+        # self.beedanceinaccuracy = beedanceinaccuracy
+        # self.beepatience = beepatience
 
         self.schedule = RandomActivation(self)
         self.grid = MultiGrid(self.width, self.height, torus=False)
@@ -77,7 +68,7 @@ class BeeSimulation(Model):
         self.instance_last_id += 1
 
         # Spawn Bees
-        for i in range(self.init_people):
+        for i in range(self.init_bees):
             # empty_loc = self.grid.find_empty()
             p = Bee(self.instance_last_id, hive_loc, self, False)
             self.tracked_bee = p  # for model reporter
@@ -86,10 +77,10 @@ class BeeSimulation(Model):
             self.instance_last_id += 1
 
         # Spawn Flowerfields and accompanying Nectar
-        for i in range(0, self.init_nectar):
+        for i in range(0, self.init_flowers):
             flower_loc = self.grid.find_empty()
-            grade = np.random.randint(1, init_max_nectar_grade + 1)
-            p = FlowerField(self.instance_last_id, flower_loc, self, grade)
+            grade = np.random.randint(init_min_nectar_grade, init_max_nectar_grade + 1)
+            p = FlowerField(self.instance_last_id, flower_loc, self, grade, nectar_respawn_interval)
             self.schedule.add(p)
             self.grid.place_agent(p, flower_loc)
             self.instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
