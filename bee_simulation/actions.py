@@ -60,29 +60,32 @@ def bee_dance(agent):
         # print(np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc),-1000,0))
         # agent.grid_values += np.clip(-10+helpers.generate_grid_costs(agent, clue_loc, wlue=True), -1000, 0)
 
+def refill_energy(agent):
+    hive = [a for a in agent.model.grid[agent.pos] if a.type == "hive"][0]
+    refill_amount = abs(agent.max_energy - agent.energy)
+    if hive.energy >= refill_amount:
+        hive.energy -= refill_amount
+        agent.energy += refill_amount
+    else:
+        agent.energy += hive.energy
+        hive.energy = 0
 
 def handle_nectar(agent):
     nectars = [a for a in agent.model.grid[agent.pos] if a.type == "nectar"]
     hives = [a for a in agent.model.grid[agent.pos] if a.type == "hive"]
     # Dropping of Nectar
     for hive in hives:
-        if agent.pos == hive.pos and len(agent.nectar_collected) > 0:
-            for n in agent.nectar_collected:
-                agent.model.nectar_collected += n
-                hive.energy += n  # Add energy to hive
-            agent.nectar_collected = []
+        if agent.pos == hive.pos:
+            refill_energy(agent)
+            if len(agent.nectar_collected) > 0:
+                for n in agent.nectar_collected:
+                    agent.model.nectar_collected += n
+                    hive.energy += n  # Add energy to hive
+                    refill_energy(agent)
+                agent.nectar_collected = []
 
-            # Refill energy
-            refill_amount = agent.max_energy - agent.energy
-            if hive.energy >= refill_amount:
-                hive.energy -= refill_amount
-                agent.energy += refill_amount
-            else:
-                agent.energy += hive.energy
-                hive.energy = 0
-
-            # Bee dance
-            bee_dance(agent)
+                # Bee dance
+                bee_dance(agent)
 
     # Collection of Nectar
     for nectar in nectars:
