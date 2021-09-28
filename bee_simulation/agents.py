@@ -32,34 +32,37 @@ class Bee(MovingEntity):
         # Agent parameters
         self.perception_range = 1
 
-        # Initiating grid memory for logic inferencing (and put in hive locations)
-        self.grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
-        for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
-            self.grid_memory[hive.pos] = "x"
-            self.hive_pos = hive.pos
+        # Init grid memory
+        self.hive_pos = (0, 0)
+        self.grid_memory = self.init_grid_memory(self)
 
         # Grid values
-        self.grid_values = helpers.generate_grid_values(model, self.hive_pos, update=False)
+        self.grid_values = helpers.generate_grid_values(model, self.hive_pos)
+
+    def init_grid_memory(self, agent):
+        # Initiating grid memory for logic inferencing (and put in hive locations)
+        grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
+        for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
+            grid_memory[hive.pos] = "x"
+            agent.hive_pos = hive.pos
+        return grid_memory
 
     def step(self):
-        if self.state is not "dormant":
-            # print(np.rot90(self.grid_values))
-            actions.handle_nectar(self)
-            if self.state == "dormant":
-                return
-            logic.update_memory(self, perception.percept(self))
-            self.state = logic.plan_rational_move2(self)
+        # print(np.rot90(self.grid_values))
+        actions.handle_nectar(self)
+        logic.update_memory(self, perception.percept(self))
+        self.state = logic.plan_rational_move2(self)
 
-            print(f"Current State: {self.state}")
+        print(f"Current State: {self.state}")
 
-            if self.state == "return_to_hive":
-                actions.return_to_hive(self)
-            elif self.state == "fetch_closest_nectar":
-                actions.fetch_closest_nectar(self)
-            elif self.state == "explore":
-                actions.explore2(self)
-            else:
-                exit(f"Invalid State: {self.state}")
+        if self.state == "return_to_hive":
+            actions.return_to_hive(self)
+        elif self.state == "fetch_closest_nectar":
+            actions.fetch_closest_nectar(self)
+        elif self.state == "explore":
+            actions.explore2(self)
+        else:
+            exit(f"Invalid State: {self.state}")
 
 
 class FlowerField(StaticObject):

@@ -104,14 +104,14 @@ class BeeSimulation(Model):
             self.step()
 
 
-    def swap_bee(self, bee, hive_loc, clue_loc=False):
-        self.instance_last_id += 1
-        p = Bee(self.instance_last_id, hive_loc, self, False)
-        self.grid.place_agent(p, hive_loc)
-        self.schedule.add(p)
-
-        if clue_loc is not False:
-            gv = p.grid_values
-            p.grid_values -= helpers.generate_grid_values(self, clue_loc, update=gv)
-
-        # self.grid.remove_agent(bee)
+    # def swap_bee(self, bee, hive_loc, clue_loc=False):
+    #     self.instance_last_id += 1
+    #     p = Bee(self.instance_last_id, hive_loc, self, False)
+    #     self.grid.place_agent(p, hive_loc)
+    #     self.schedule.add(p)
+    #
+    #     if clue_loc is not False:
+    #         gv = p.grid_values
+    #         p.grid_values -= helpers.generate_grid_values(self, clue_loc, update=gv)
+    #
+    #     # self.grid.remove_agent(bee)

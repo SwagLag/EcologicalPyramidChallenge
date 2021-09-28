@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 
-from bee_simulation import logic
+from bee_simulation import logic, helpers
 from bee_simulation.helpers import calc_distance, calc_closest_of_list
 
 
@@ -44,12 +44,19 @@ def explore2(agent):
 
 def bee_dance(agent):
     nectar = np.argwhere(agent.grid_memory == 'n')
-    clue_loc = False
-    if len(nectar) > 0:
-        clue_loc = random.choice(nectar)
+    hive_pos = agent.hive_pos
 
-    agent.model.swap_bee(agent, agent.hive_pos, clue_loc)
-    agent.state = "dormant"
+    # Wipe grid memory
+    agent.grid_memory = agent.init_grid_memory(agent)
+
+    # Reset grid values
+    agent.grid_values = helpers.generate_grid_values(agent.model, hive_pos)
+    if len(nectar) > 0:
+        # Put clue into grid values
+        clue_loc = random.choice(nectar)
+        # print(np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc),-1000,0))
+        agent.grid_values += np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc), -1000, 0)
+
 
 def handle_nectar(agent):
     nectars = [a for a in agent.model.grid[agent.pos] if a.type == "nectar"]
