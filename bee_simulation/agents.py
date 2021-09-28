@@ -27,18 +27,25 @@ class Bee(MovingEntity):
         # - return_to_hive
         # - fetch_closest_nectar
         # - explore
+        # - dormant
 
         # Agent parameters
         self.perception_range = 1
 
-        # Initiating grid memory for logic inferencing (and put in hive locations)
-        self.grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
-        for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
-            self.grid_memory[hive.pos] = "x"
-            hive_pos = hive.pos
+        # Init grid memory
+        self.hive_pos = (0, 0)
+        self.grid_memory = self.init_grid_memory(self)
 
         # Grid values
-        self.grid_values = helpers.generate_grid_values(model, hive_pos, init=True)
+        self.grid_values = helpers.generate_grid_values(model, self.hive_pos)
+
+    def init_grid_memory(self, agent):
+        # Initiating grid memory for logic inferencing (and put in hive locations)
+        grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
+        for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
+            grid_memory[hive.pos] = "x"
+            agent.hive_pos = hive.pos
+        return grid_memory
 
     def step(self):
         # print(np.rot90(self.grid_values))

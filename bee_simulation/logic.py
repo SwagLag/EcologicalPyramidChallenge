@@ -42,15 +42,15 @@ def calc_values_of_list(model, origin_pos, target_positions, grid_values, grid_m
 
     best = {"pos": (0, 0), "value": 1000}
     for pos in target_positions:
-        nectar_multiplier = 0
+        nectar_value_bonus = 0
         if grid_memory[pos] in ['o', 'x']:
             value = 1000
         else:
             if grid_memory[pos] == 'n':
                 grade = next(nectar for nectar in model.grid[pos]).grade
-                nectar_multiplier = - grade * 100
+                nectar_value_bonus = grade * 100
             d = helpers.calc_distance(origin_pos, pos)
-            value = grid_values[pos] + d + nectar_multiplier
+            value = grid_values[pos] + d - nectar_value_bonus
 
         if verbose:
             value_grid[pos] = value

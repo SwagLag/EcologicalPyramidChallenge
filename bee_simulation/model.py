@@ -1,3 +1,4 @@
+from bee_simulation import helpers
 from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from mesa import Model
 from mesa.space import MultiGrid
@@ -59,38 +60,38 @@ class BeeSimulation(Model):
         )
 
         # create people for the model according to number of people set by user
-        instance_last_id = 0
+        self.instance_last_id = 0
 
         # Spawn Hives
         hive_loc = self.grid.find_empty()
-        p = Hive(instance_last_id, hive_loc, self)
+        p = Hive(self.instance_last_id, hive_loc, self)
         self.grid.place_agent(p, hive_loc)
         self.schedule.add(p)
         self.running = True
         self.datacollector.collect(self)
-        instance_last_id += 1
+        self.instance_last_id += 1
 
         # Spawn Bees
         for i in range(self.init_people):
             # empty_loc = self.grid.find_empty()
-            p = Bee(instance_last_id, hive_loc, self, False)
+            p = Bee(self.instance_last_id, hive_loc, self, False)
             self.grid.place_agent(p, hive_loc)
             self.schedule.add(p)
-            instance_last_id += 1
+            self.instance_last_id += 1
 
         # Spawn Flowerfields and accompanying Nectar
         for i in range(0, self.init_nectar):
             flower_loc = self.grid.find_empty()
             grade = np.random.randint(1, init_max_nectar_grade + 1)
-            p = FlowerField(instance_last_id, flower_loc, self, grade)
+            p = FlowerField(self.instance_last_id, flower_loc, self, grade)
             self.grid.place_agent(p, flower_loc)
-            instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
+            self.instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
 
             amount = np.random.randint(min_nectar, max_nectar + 1)
-            p = Nectar(instance_last_id, flower_loc, self, amount, p.grade)
+            p = Nectar(self.instance_last_id, flower_loc, self, amount, p.grade)
             self.grid.place_agent(p, flower_loc)
             self.schedule.add(p)
-            instance_last_id += 1
+            self.instance_last_id += 1
 
     def step(self):
         # tell all the agents in the model to run their step function
@@ -101,3 +102,16 @@ class BeeSimulation(Model):
     def run_model(self):
         for i in range(self.run_time):
             self.step()
+
+
+    # def swap_bee(self, bee, hive_loc, clue_loc=False):
+    #     self.instance_last_id += 1
+    #     p = Bee(self.instance_last_id, hive_loc, self, False)
+    #     self.grid.place_agent(p, hive_loc)
+    #     self.schedule.add(p)
+    #
+    #     if clue_loc is not False:
+    #         gv = p.grid_values
+    #         p.grid_values -= helpers.generate_grid_values(self, clue_loc, update=gv)
+    #
+    #     # self.grid.remove_agent(bee)
