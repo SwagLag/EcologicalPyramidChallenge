@@ -80,7 +80,7 @@ class FlowerField(StaticObject):
         super().__init__(unique_id, pos, model)
         self.type = "flowerfield"
         self.grade = random.randrange(1, max_nectar_grade + 1)
-        self.respawn_interval = 1
+        self.respawn_interval = 75
         self.steps_left_for_respawn = self.respawn_interval
 
     def step(self) -> None:
@@ -90,12 +90,12 @@ class FlowerField(StaticObject):
 
             nectar_on_loc = [a for a in self.model.schedule.agents if a.type == "nectar" and a.pos == self.pos]
             if len(nectar_on_loc) > 0:
-                nectar_on_loc.amount += 1
+                nectar_on_loc[0].amount += 1
             else:
                 p = Nectar(self.model.instance_last_id, self.pos, self, 1, self.grade)
-                self.grid.place_agent(p, self.pos)
+                self.model.grid.place_agent(p, self.pos)
                 self.model.schedule.add(p)
-                self.instance_last_id += 1
+                self.model.instance_last_id += 1
 
 
 class Nectar(StaticObject):

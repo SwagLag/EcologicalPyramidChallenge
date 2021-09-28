@@ -90,13 +90,13 @@ class BeeSimulation(Model):
             flower_loc = self.grid.find_empty()
             grade = np.random.randint(1, init_max_nectar_grade + 1)
             p = FlowerField(self.instance_last_id, flower_loc, self, grade)
+            self.schedule.add(p)
             self.grid.place_agent(p, flower_loc)
             self.instance_last_id += 1  # Don't want both flowerfield and nectar to have the same ID
 
             amount = np.random.randint(min_nectar, max_nectar + 1)
             p = Nectar(self.instance_last_id, flower_loc, self, amount, p.grade)
             self.grid.place_agent(p, flower_loc)
-            self.schedule.add(p)
             self.instance_last_id += 1
 
         self.datacollector = DataCollector(
