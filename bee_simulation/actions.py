@@ -41,9 +41,6 @@ def bee_dance(agent):
         clue_loc = random.choice(nectar_pos)
         agent.clue_loc = clue_loc
 
-        # print(np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc),-1000,0))
-        # agent.grid_values += np.clip(-10+helpers.generate_grid_costs(agent, clue_loc, wlue=True), -1000, 0)
-
 
 def refill_energy(agent):
     hive = [a for a in agent.model.grid[agent.pos] if a.type == "hive"][0]
@@ -55,48 +52,24 @@ def refill_energy(agent):
         agent.energy += hive.energy
         hive.energy = 0
 
+def collect_nectar(agent, nectar):
+    if len(agent.nectar_collected) == 0:
+        agent.nectar_collected.append(nectar.grade)
+        if nectar.amount == 1:
+            agent.model.grid.remove_agent(nectar)
+            agent.grid_memory[agent.pos] = 'o'
+        else:
+            nectar.amount -= 1
 
-def handle_nectar(agent):
-    nectars = [a for a in agent.model.grid[agent.pos] if a.type == "nectar"]
+def dropoff_nectar(agent):
     hives = [a for a in agent.model.grid[agent.pos] if a.type == "hive"]
-    # Dropping of Nectar
     for hive in hives:
         if agent.pos == hive.pos:
-            refill_energy(agent)
             if len(agent.nectar_collected) > 0:
                 for n in agent.nectar_collected:
                     agent.model.nectar_collected += n
                     hive.energy += n  # Add energy to hive
-                    refill_energy(agent)
                 agent.nectar_collected = []
 
                 # Bee dance
                 bee_dance(agent)
-
-    # Collection of Nectar
-    for nectar in nectars:
-        if agent.pos == nectar.pos:
-            if len(agent.nectar_collected) == 0:
-                agent.nectar_collected.append(nectar.grade)
-                if nectar.amount == 1:
-                    agent.model.grid.remove_agent(nectar)
-                    agent.grid_memory[agent.pos] = 'o'
-                else:
-                    nectar.amount -= 1
-
-# Legacy below
-
-# def fetch_closest_nectar(agent):
-#     nectar = np.argwhere(agent.grid_memory == 'n')
-#     return move_to_target(agent, calc_closest_of_list(agent.pos, nectar))
-#
-#
-# def explore(agent):
-#     unexplored = np.argwhere(agent.grid_memory == '')
-#     return move_to_target(agent, calc_closest_of_list(agent.pos, unexplored))
-#
-#
-# def explore2(agent):
-#
-#     best_pos = logic.calc_values_of_list(agent.model, agent.pos, np.ndindex(agent.grid_values.shape), agent.grid_values, agent.grid_memory)
-#     return move_to_target(agent, best_pos)

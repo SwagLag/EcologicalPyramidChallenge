@@ -29,7 +29,6 @@ class Bee(MovingEntity):
         self.state = "return_to_hive"
         # Options are:
         # - return_to_hive
-        # - fetch_closest_nectar <- legacy state
         # - explore
 
         # Init grid memory
@@ -48,29 +47,38 @@ class Bee(MovingEntity):
         return grid_memory
 
     def step(self):
-        actions.handle_nectar(self)
+        # Perception
         logic.update_memory(self, perception.percept(self))
         self.state = logic.update_state(self)
-
-        # Energy usage
-        self.energy -= 1
-        if self.energy <= 0:
-            self.model.running = False
-
         print(f"Current State: {self.state}")
 
+        # Logic
         if self.state == "return_to_hive":
             actions.return_to_hive(self)
-        # elif self.state == "fetch_closest_nectar":
-        #     actions.fetch_closest_nectar(self)
         elif self.state == "explore":
             grid_scores = logic.calc_grid_scores(self)
             np.set_printoptions(precision=3, suppress=True)
             print(np.rot90(grid_scores))
             move_choice = np.unravel_index(np.argmax(grid_scores), grid_scores.shape)
             actions.move_to_target(self, move_choice)
+
+            nectar_onsite = [a for a in self.model.grid[self.pos] if a.type == "nectar"]
+            if len(nectar_onsite) > 0:
+                nectar_pos = nectar_onsite[0].pos
+                if nectar_pos == self.pos and nectar_pos==move_choice:
+                    actions.collect_nectar(self, nectar_onsite[0])
         else:
             exit(f"Invalid State: {self.state}")
+
+        # Handle nectar
+        if self.pos == self.hive_pos:
+            actions.dropoff_nectar(self)
+            actions.refill_energy(self)
+
+        # Energy usage
+        self.energy -= 1
+        if self.energy <= 0:
+            self.model.running = False
 
 
 class FlowerField(StaticObject):

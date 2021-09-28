@@ -72,7 +72,7 @@ model_params = {
         "slider", "Initial Maximum # of Nectar", 4, 1, 10, description="Maximum nectar available in flowerfields"
     ),
     "init_min_nectar_grade": UserSettableParameter(
-        "slider", "Minimum Nectar Grade", 5, 5, 100, description="Minimum nectar grade"
+        "slider", "Minimum Nectar Grade", 1, 5, 100, description="Minimum nectar grade"
     ),
     "init_max_nectar_grade": UserSettableParameter(
         "slider", "Maximum Nectar Grade", 30, 10, 100, description="Maximum nectar grade"

@@ -33,18 +33,5 @@ def calc_grid_scores(agent):
     # print("grid_gain_wclue:\n",np.rot90(grid_gain_wclue))
 
     grid_scores = - grid_cost_base - grid_cost_cpos + grid_gain_wclue
+    grid_scores = np.clip(grid_scores, -1000, 1000)
     return grid_scores
-
-
-# Legacy below
-
-# def plan_rational_move(agent):
-#     if len(agent.nectar_collected) > 0:
-#         return "return_to_hive"
-#     else:
-#         if len(np.argwhere(agent.grid_memory == 'n')) != 0:
-#             return "fetch_closest_nectar"
-#         elif len(np.argwhere(agent.grid_memory == '')) == 0:
-#             return "return_to_hive"
-#         else:
-#             return "explore"
