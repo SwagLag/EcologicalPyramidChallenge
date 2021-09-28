@@ -1,5 +1,5 @@
 from mesa.visualization.ModularVisualization import ModularServer
-from mesa.visualization.modules import CanvasGrid, ChartModule
+from mesa.visualization.modules import CanvasGrid, ChartModule, BarChartModule, TextVisualization
 from mesa.visualization.UserParam import UserSettableParameter
 from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from bee_simulation.model import BeeSimulation
@@ -113,22 +113,28 @@ model_params = {
 canvas_element = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
 # map data to chart in the ChartModule
+npt_element = ChartModule(
+    [
+    {"Label": "Nectar/T", "Color": FLOWERFIELD_COLOR},
+    ], canvas_width=500, canvas_height=100
+)
+
 chart_element = ChartModule(
     [
     {"Label": "Nectar stored", "Color": HIVE_COLOR},
     {"Label": "Bee energy", "Color": BEE_COLOR},
-    ]
+    ], canvas_width=500, canvas_height=175
 )
 
 chart_element2 = ChartModule(
     [
         {"Label": "Nectar Collected", "Color": NECTAR_COLOR},
-    ]
+    ], canvas_width=500, canvas_height=175
 )
 # create instance of Mesa ModularServer
 server = ModularServer(
     BeeSimulation,
-    [canvas_element, chart_element, chart_element2],
+    [canvas_element, chart_element, npt_element, chart_element2],
     "Dance of the Bees",
     model_params=model_params,
 )

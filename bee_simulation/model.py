@@ -12,6 +12,10 @@ def get_nectar_collected(model):
     return model.nectar_collected
 
 
+def get_nectar_per_t(model):
+    return (get_nectar_collected(model)/(max(1,model.steps_past)))
+
+
 def get_hive_energy(model):
     return model.tracked_hive.energy
 
@@ -32,12 +36,14 @@ class BeeSimulation(Model):
        are all UserSettableParameters"""
 
     def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
-                 init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50, collect_negative_value_nectar=True,
+                 init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
+                 collect_negative_value_nectar=True,
                  perception_range=1, max_bee_energy=30):
 
         super().__init__()
         self.height = height
         self.width = width
+        self.steps_past = 0
 
         # Server parameters
         min_nectar = min_nectar
@@ -60,7 +66,6 @@ class BeeSimulation(Model):
 
         self.nectar_collected = 0
 
-        # create people for the model according to number of people set by user
         self.instance_last_id = 0
 
         # Spawn Hives
@@ -96,6 +101,7 @@ class BeeSimulation(Model):
 
         self.datacollector = DataCollector(
             model_reporters={
+                "Nectar/T": get_nectar_per_t,
                 "Bee energy": get_bee_energy,
                 "Nectar stored": get_hive_energy,
                 "Nectar Collected": get_nectar_collected,
@@ -108,6 +114,7 @@ class BeeSimulation(Model):
         # tell all the agents in the model to run their step function
         self.schedule.step()
         # collect data
+        self.steps_past+=1
         self.datacollector.collect(self)
 
     def run_model(self):
