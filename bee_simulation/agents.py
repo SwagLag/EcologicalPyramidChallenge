@@ -25,6 +25,7 @@ class Bee(MovingEntity):
         self.type = "bee"
         self.nectar_collected = []
         self.energy = self.max_energy
+        self.clue_loc = None
 
         # State
         self.state = "return_to_hive"
@@ -33,13 +34,12 @@ class Bee(MovingEntity):
         # - fetch_closest_nectar
         # - explore
 
-
         # Init grid memory
-        self.hive_pos = (0, 0)
+        self.hive_pos = None
         self.grid_memory = self.init_grid_memory(self)
 
         # Grid values
-        self.grid_values = helpers.generate_grid_values(self, self.hive_pos)
+        self.grid_values = helpers.generate_grid_costs(self, self.hive_pos)
 
     def init_grid_memory(self, agent):
         # Initiating grid memory for logic inferencing (and put in hive locations)
@@ -50,24 +50,27 @@ class Bee(MovingEntity):
         return grid_memory
 
     def step(self):
-        # print(np.rot90(self.grid_values))
         actions.handle_nectar(self)
         logic.update_memory(self, perception.percept(self))
-        self.state = logic.plan_rational_move2(self)
+        self.state = logic.update_state(self)
 
-        # Use energy
+        # Energy usage
         self.energy -= 1
-        if self.energy <= 0:
-            self.model.running = False
+        # if self.energy <= 0:
+        #     self.model.running = False
 
-        # print(f"Current State: {self.state}")
+        print(f"Current State: {self.state}")
 
         if self.state == "return_to_hive":
             actions.return_to_hive(self)
         elif self.state == "fetch_closest_nectar":
             actions.fetch_closest_nectar(self)
         elif self.state == "explore":
-            actions.explore2(self)
+            grid_scores = logic.calc_grid_scores(self)
+            np.set_printoptions(precision=3, suppress=True)
+            print(np.rot90(grid_scores))
+            move_choice = np.unravel_index(np.argmax(grid_scores), grid_scores.shape)
+            actions.move_to_target(self, move_choice)
         else:
             exit(f"Invalid State: {self.state}")
 

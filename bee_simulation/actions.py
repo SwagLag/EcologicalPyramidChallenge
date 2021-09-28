@@ -38,24 +38,27 @@ def explore(agent):
 
 
 def explore2(agent):
+
     best_pos = logic.calc_values_of_list(agent.model, agent.pos, np.ndindex(agent.grid_values.shape), agent.grid_values, agent.grid_memory)
     return move_to_target(agent, best_pos)
 
 
 def bee_dance(agent):
-    nectar = np.argwhere(agent.grid_memory == 'n')
+    nectar_pos = np.argwhere(agent.grid_memory == 'n')
     hive_pos = agent.hive_pos
 
     # Wipe grid memory
     agent.grid_memory = agent.init_grid_memory(agent)
 
     # Reset grid values
-    agent.grid_values = helpers.generate_grid_values(agent, hive_pos)
-    if len(nectar) > 0:
+    agent.grid_values = helpers.generate_grid_costs(agent, hive_pos)
+    if len(nectar_pos) > 0:
         # Put clue into grid values
-        clue_loc = random.choice(nectar)
+        clue_loc = random.choice(nectar_pos)
+        agent.clue_loc = clue_loc
+
         # print(np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc),-1000,0))
-        agent.grid_values += np.clip(-10+helpers.generate_grid_values(agent, clue_loc, update=True), -1000, 0)
+        # agent.grid_values += np.clip(-10+helpers.generate_grid_costs(agent, clue_loc, wlue=True), -1000, 0)
 
 
 def handle_nectar(agent):

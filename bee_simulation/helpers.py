@@ -15,13 +15,33 @@ def calc_closest_of_list(origin_pos, target_positions):
     return best['pos']
 
 
-def generate_grid_values(agent, nexus_pos, update=False):
+def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
     grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
-            grid_values[ix, yx] = calc_distance(nexus_pos, (ix, yx))
-            if update:
-                grid_values[ix, yx] += calc_distance(agent.pos, (ix, yx))
+            if from_agent:
+                grid_values[ix, yx] = calc_distance(agent.pos, (ix, yx))
+            else:
+                grid_values[ix, yx] = calc_distance(nexus_pos, (ix, yx))
+
+    return grid_values
+
+
+def generate_grid_gain(agent, clue_loc=None):
+    grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
+
+    for ix, x in enumerate(grid_values):
+        for yx, y in enumerate(x):
+            if agent.grid_memory[ix, yx] in ['o', 'x']:
+                grid_values[ix, yx] = -1000
+            if type(clue_loc) is not type(None) and clue_loc[0] == ix and clue_loc[1] == yx:
+                n = [a for a in agent.model.grid[ix, yx] if a.type == 'nectar']
+                if len(n) > 0:
+                    grid_values[ix, yx] = n[0].grade
+            if agent.grid_memory[ix, yx] == 'n':
+                n = [a for a in agent.model.grid[ix, yx] if a.type == 'nectar']
+                if len(n) > 0:
+                    grid_values[ix, yx] = n[0].grade
 
     return grid_values
