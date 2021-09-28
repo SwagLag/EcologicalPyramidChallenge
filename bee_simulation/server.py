@@ -116,20 +116,20 @@ canvas_element = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 npt_element = ChartModule(
     [
     {"Label": "Nectar/T", "Color": FLOWERFIELD_COLOR},
-    ], canvas_width=500, canvas_height=100
+    ], canvas_width=500, canvas_height=200
 )
 
 chart_element = ChartModule(
     [
     {"Label": "Nectar stored", "Color": HIVE_COLOR},
     {"Label": "Bee energy", "Color": BEE_COLOR},
-    ], canvas_width=500, canvas_height=175
+    ], canvas_width=500, canvas_height=200
 )
 
 chart_element2 = ChartModule(
     [
         {"Label": "Nectar Collected", "Color": NECTAR_COLOR},
-    ], canvas_width=500, canvas_height=175
+    ], canvas_width=500, canvas_height=200
 )
 # create instance of Mesa ModularServer
 server = ModularServer(
