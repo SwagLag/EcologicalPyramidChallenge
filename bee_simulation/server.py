@@ -62,23 +62,36 @@ model_params = {
     # "init_bees": UserSettableParameter(
     #     "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
     # ),
+    "t1":UserSettableParameter('static_text', value="Space parameters"),
     "init_flowers": UserSettableParameter(
-        "slider", "# of Flowerfields", 5, 1, 20, description="Number of flower fields"
+        "slider", "# of flowerfields", 5, 1, 20, description="Number of flower fields"
     ),
     "min_nectar": UserSettableParameter(
-        "slider", "Initial Minimum # of Nectar", 2, 1, 10, description="Minimum nectar available in flowerfields"
+        "slider", "Initial minimum # of nectar per flower", 2, 1, 10, description="Minimum nectar available in flowerfields"
     ),
     "max_nectar": UserSettableParameter(
-        "slider", "Initial Maximum # of Nectar", 4, 1, 10, description="Maximum nectar available in flowerfields"
+        "slider", "Initial maximum # of nectar per flower", 4, 1, 10, description="Maximum nectar available in flowerfields"
     ),
+    "t2":UserSettableParameter('static_text', value="Nectar parameters"),
     "init_min_nectar_grade": UserSettableParameter(
-        "slider", "Minimum Nectar Grade", 1, 5, 100, description="Minimum nectar grade"
+        "slider", "Minimum nectar grade", 5, 1, 100, description="Minimum nectar grade"
     ),
     "init_max_nectar_grade": UserSettableParameter(
-        "slider", "Maximum Nectar Grade", 30, 10, 100, description="Maximum nectar grade"
+        "slider", "Maximum nectar grade", 25, 10, 50, description="Maximum nectar grade"
     ),
     "nectar_respawn_interval": UserSettableParameter(
         "slider", "Nectar respawn interval", 75, 10, 200, description="Nectar respawn interval"
+    ),
+    "t3": UserSettableParameter('static_text', value="Bee parameters"),
+    "max_bee_energy": UserSettableParameter(
+        "slider", "Max bee energy", 30, 10, 100, description="Max bee energy"
+    ),
+    "collect_negative_value_nectar": UserSettableParameter(
+        'checkbox', 'Collect negative value nectar', value=True
+    ),
+    "perception_range":UserSettableParameter(
+        'choice', 'Perception range', value=1,
+        choices=[1, 2, 3]
     ),
     # "behaviourprobability": UserSettableParameter(
     #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"

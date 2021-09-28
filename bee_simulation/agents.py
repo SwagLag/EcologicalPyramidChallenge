@@ -16,8 +16,8 @@ class Bee(MovingEntity):
         super().__init__(unique_id, pos, model, moore=moore)
 
         # Agent parameters
-        self.perception_range = 1
-        self.max_energy = 30
+        self.perception_range = self.model.perception_range
+        self.max_energy = self.model.max_bee_energy
 
         # Private vars
         self.type = "bee"
@@ -66,7 +66,11 @@ class Bee(MovingEntity):
             if len(nectar_onsite) > 0:
                 nectar_pos = nectar_onsite[0].pos
                 if nectar_pos == self.pos and nectar_pos==move_choice:
-                    actions.collect_nectar(self, nectar_onsite[0])
+                    if grid_scores[nectar_pos] > 0 or self.model.collect_negative_value_nectar:
+                        actions.collect_nectar(self, nectar_onsite[0])
+                    else:
+                        self.grid_memory[nectar_pos] = '/'
+
         else:
             exit(f"Invalid State: {self.state}")
 

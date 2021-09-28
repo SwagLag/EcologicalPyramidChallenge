@@ -32,7 +32,8 @@ class BeeSimulation(Model):
        are all UserSettableParameters"""
 
     def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
-                 init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50):
+                 init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50, collect_negative_value_nectar=True,
+                 perception_range=1, max_bee_energy=30):
 
         super().__init__()
         self.height = height
@@ -45,6 +46,9 @@ class BeeSimulation(Model):
         self.init_bees = init_bees
         self.init_flowers = init_flowers
         self.init_nectar_grade = init_max_nectar_grade
+        self.collect_negative_value_nectar = collect_negative_value_nectar
+        self.perception_range = perception_range
+        self.max_bee_energy = max_bee_energy
 
         # Agent parameters
         # self.behaviourprobability = behaviourprobability

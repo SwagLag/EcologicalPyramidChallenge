@@ -5,7 +5,7 @@ import bee_simulation.helpers as helpers
 def update_memory(agent, perception, show_grid=False):
     for tile in perception:
         for entity in agent.model.grid[tile]:
-            if entity.type == "nectar":  # remember nectar locations
+            if entity.type == "nectar" and agent.grid_memory[tile] != '/':  # remember nectar locations
                 agent.grid_memory[tile] = entity.type
         if agent.grid_memory[tile] == '':  # '' is unobserved
             agent.grid_memory[tile] = 'o'  # o for observed
