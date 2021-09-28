@@ -66,13 +66,13 @@ model_params = {
     #     "slider", "Flowerfields", 3, 1, 30, description="Initial Number of Flowerfields and accompanying Nectar"
     # ),
     "min_nectar": UserSettableParameter(
-        "slider", "Minimum Nectar", 1, 1, 3, description="Minimum nectar available in flowerfields"
+        "slider", "Minimum Nectar", 3, 1, 10, description="Minimum nectar available in flowerfields"
     ),
     "max_nectar": UserSettableParameter(
-        "slider", "Maximum Nectar", 3, 1, 5, description="Maximum nectar available in flowerfields"
+        "slider", "Maximum Nectar", 3, 1, 10, description="Maximum nectar available in flowerfields"
     ),
     "init_max_nectar_grade": UserSettableParameter(
-        "slider", "Maximum Nectar Grade", 3, 1, 10, description="Maximum nectar grade"
+        "slider", "Maximum Nectar Grade", 50, 10, 100, description="Maximum nectar grade"
     ),
     "behaviourprobability": UserSettableParameter(
         "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
@@ -91,19 +91,25 @@ model_params = {
 }
 
 # set the portrayal function and size of the canvas for visualization
-canvas_element = CanvasGrid(agent_portrayal, 6, 6, 500, 500)
+canvas_element = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
 # map data to chart in the ChartModule
 chart_element = ChartModule(
     [
-        {"Label": "Nectar Collected", "Color": NECTAR_COLOR},
+    {"Label": "Nectar stored", "Color": HIVE_COLOR},
+    {"Label": "Bee energy", "Color": BEE_COLOR},
     ]
 )
 
+chart_element2 = ChartModule(
+    [
+        {"Label": "Nectar Collected", "Color": NECTAR_COLOR},
+    ]
+)
 # create instance of Mesa ModularServer
 server = ModularServer(
     BeeSimulation,
-    [canvas_element, chart_element],
+    [canvas_element, chart_element, chart_element2],
     "Dance of the Bees",
     model_params=model_params,
 )

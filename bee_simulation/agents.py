@@ -17,9 +17,14 @@ class Bee(MovingEntity):
         # init parent class with required parameters
         super().__init__(unique_id, pos, model, moore=moore)
 
+        # Agent parameters
+        self.perception_range = 1
+        self.max_energy = 20
+
         # Private vars
         self.type = "bee"
         self.nectar_collected = []
+        self.energy = self.max_energy
 
         # State
         self.state = "return_to_hive"
@@ -27,17 +32,14 @@ class Bee(MovingEntity):
         # - return_to_hive
         # - fetch_closest_nectar
         # - explore
-        # - dormant
 
-        # Agent parameters
-        self.perception_range = 1
 
         # Init grid memory
         self.hive_pos = (0, 0)
         self.grid_memory = self.init_grid_memory(self)
 
         # Grid values
-        self.grid_values = helpers.generate_grid_values(model, self.hive_pos)
+        self.grid_values = helpers.generate_grid_values(self, self.hive_pos)
 
     def init_grid_memory(self, agent):
         # Initiating grid memory for logic inferencing (and put in hive locations)
@@ -53,7 +55,12 @@ class Bee(MovingEntity):
         logic.update_memory(self, perception.percept(self))
         self.state = logic.plan_rational_move2(self)
 
-        print(f"Current State: {self.state}")
+        # Use energy
+        self.energy -= 1
+        if self.energy <= 0:
+            self.model.running = False
+
+        # print(f"Current State: {self.state}")
 
         if self.state == "return_to_hive":
             actions.return_to_hive(self)
@@ -70,6 +77,22 @@ class FlowerField(StaticObject):
         super().__init__(unique_id, pos, model)
         self.type = "flowerfield"
         self.grade = random.randrange(1, max_nectar_grade + 1)
+        self.respawn_interval = 1
+        self.steps_left_for_respawn = self.respawn_interval
+
+    def step(self) -> None:
+        self.steps_left_for_respawn -= 1
+        if self.steps_left_for_respawn <= 0:
+            self.steps_left_for_respawn = self.respawn_interval
+
+            nectar_on_loc = [a for a in self.model.schedule.agents if a.type == "nectar" and a.pos == self.pos]
+            if len(nectar_on_loc) > 0:
+                nectar_on_loc.amount += 1
+            else:
+                p = Nectar(self.model.instance_last_id, self.pos, self, 1, self.grade)
+                self.grid.place_agent(p, self.pos)
+                self.model.schedule.add(p)
+                self.instance_last_id += 1
 
 
 class Nectar(StaticObject):
@@ -84,5 +107,6 @@ class Hive(StaticObject):
     def __init__(self, unique_id, pos, model):
         super().__init__(unique_id, pos, model)
         self.type = "hive"
+        self.energy = 20
 
     # step is called for each agent in model.BeeModel.schedule.step()

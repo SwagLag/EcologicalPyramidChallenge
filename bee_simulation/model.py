@@ -7,15 +7,27 @@ from mesa.time import RandomActivation
 
 import numpy as np
 
+
 # Start of datacollector functions
 def get_nectar_collected(model):
     return model.nectar_collected
 
+
+def get_hive_energy(model):
+    return model.tracked_hive.energy
+
+
+def get_bee_energy(model):
+    return model.tracked_bee.energy
+
+
+# --------------------------------
+
 class BeeSimulation(Model):
     # grid height
-    grid_h = 6
+    grid_h = 10
     # grid width
-    grid_w = 6
+    grid_w = 10
 
     """init parameters "init_people", "rich_threshold", and "reserve_percent"
        are all UserSettableParameters"""
@@ -25,8 +37,8 @@ class BeeSimulation(Model):
             height=grid_h,
             width=grid_w,
             init_bees=1,
-            init_flowers=3,
-            init_max_nectar_grade=3,
+            init_flowers=6,
+            init_max_nectar_grade=30,
             min_nectar=1,
             max_nectar=1,
             behaviourprobability=50,
@@ -53,28 +65,22 @@ class BeeSimulation(Model):
 
         self.nectar_collected = 0
 
-        self.datacollector = DataCollector(
-            model_reporters={
-                "Nectar Collected": get_nectar_collected,
-            },
-        )
-
         # create people for the model according to number of people set by user
         self.instance_last_id = 0
 
         # Spawn Hives
         hive_loc = self.grid.find_empty()
         p = Hive(self.instance_last_id, hive_loc, self)
+        self.tracked_hive = p  # For model reporter
         self.grid.place_agent(p, hive_loc)
         self.schedule.add(p)
-        self.running = True
-        self.datacollector.collect(self)
         self.instance_last_id += 1
 
         # Spawn Bees
         for i in range(self.init_people):
             # empty_loc = self.grid.find_empty()
             p = Bee(self.instance_last_id, hive_loc, self, False)
+            self.tracked_bee = p  # for model reporter
             self.grid.place_agent(p, hive_loc)
             self.schedule.add(p)
             self.instance_last_id += 1
@@ -93,6 +99,16 @@ class BeeSimulation(Model):
             self.schedule.add(p)
             self.instance_last_id += 1
 
+        self.datacollector = DataCollector(
+            model_reporters={
+                "Bee energy": get_bee_energy,
+                "Nectar stored": get_hive_energy,
+                "Nectar Collected": get_nectar_collected,
+            },
+        )
+        self.running = True
+        self.datacollector.collect(self)
+
     def step(self):
         # tell all the agents in the model to run their step function
         self.schedule.step()
@@ -102,7 +118,6 @@ class BeeSimulation(Model):
     def run_model(self):
         for i in range(self.run_time):
             self.step()
-
 
     # def swap_bee(self, bee, hive_loc, clue_loc=False):
     #     self.instance_last_id += 1

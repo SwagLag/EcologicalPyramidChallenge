@@ -15,11 +15,13 @@ def calc_closest_of_list(origin_pos, target_positions):
     return best['pos']
 
 
-def generate_grid_values(model, nexus_pos):
-    grid_values = np.zeros([model.grid_w, model.grid_h], dtype=np.float)
+def generate_grid_values(agent, nexus_pos, update=False):
+    grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
             grid_values[ix, yx] = calc_distance(nexus_pos, (ix, yx))
+            if update:
+                grid_values[ix, yx] += calc_distance(agent.pos, (ix, yx))
 
     return grid_values

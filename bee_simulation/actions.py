@@ -50,12 +50,12 @@ def bee_dance(agent):
     agent.grid_memory = agent.init_grid_memory(agent)
 
     # Reset grid values
-    agent.grid_values = helpers.generate_grid_values(agent.model, hive_pos)
+    agent.grid_values = helpers.generate_grid_values(agent, hive_pos)
     if len(nectar) > 0:
         # Put clue into grid values
         clue_loc = random.choice(nectar)
         # print(np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc),-1000,0))
-        agent.grid_values += np.clip(-20+helpers.generate_grid_values(agent.model, clue_loc), -1000, 0)
+        agent.grid_values += np.clip(-10+helpers.generate_grid_values(agent, clue_loc, update=True), -1000, 0)
 
 
 def handle_nectar(agent):
@@ -66,7 +66,19 @@ def handle_nectar(agent):
         if agent.pos == hive.pos and len(agent.nectar_collected) > 0:
             for n in agent.nectar_collected:
                 agent.model.nectar_collected += n
+                hive.energy += n  # Add energy to hive
             agent.nectar_collected = []
+
+            # Refill energy
+            refill_amount = agent.max_energy - agent.energy
+            if hive.energy >= refill_amount:
+                hive.energy -= refill_amount
+                agent.energy += refill_amount
+            else:
+                agent.energy += hive.energy
+                hive.energy = 0
+
+            # Bee dance
             bee_dance(agent)
 
     # Collection of Nectar
