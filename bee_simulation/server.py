@@ -87,7 +87,7 @@ model_params = {
         "slider", "Max bee energy", 30, 10, 100, description="Max bee energy"
     ),
     "collect_negative_value_nectar": UserSettableParameter(
-        'checkbox', 'Collect negative value nectar', value=True
+        'checkbox', 'Collect negative value nectar', value=False
     ),
     "perception_range":UserSettableParameter(
         'choice', 'Perception range', value=1,
