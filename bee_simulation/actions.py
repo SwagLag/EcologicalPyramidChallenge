@@ -27,20 +27,20 @@ def return_to_hive(agent):
     return move_to_target(agent, calc_closest_of_list(agent.pos, hives))
 
 
-def fetch_closest_nectar(agent):
-    nectar = np.argwhere(agent.grid_memory == 'n')
-    return move_to_target(agent, calc_closest_of_list(agent.pos, nectar))
-
-
-def explore(agent):
-    unexplored = np.argwhere(agent.grid_memory == '')
-    return move_to_target(agent, calc_closest_of_list(agent.pos, unexplored))
-
-
-def explore2(agent):
-
-    best_pos = logic.calc_values_of_list(agent.model, agent.pos, np.ndindex(agent.grid_values.shape), agent.grid_values, agent.grid_memory)
-    return move_to_target(agent, best_pos)
+# def fetch_closest_nectar(agent):
+#     nectar = np.argwhere(agent.grid_memory == 'n')
+#     return move_to_target(agent, calc_closest_of_list(agent.pos, nectar))
+#
+#
+# def explore(agent):
+#     unexplored = np.argwhere(agent.grid_memory == '')
+#     return move_to_target(agent, calc_closest_of_list(agent.pos, unexplored))
+#
+#
+# def explore2(agent):
+#
+#     best_pos = logic.calc_values_of_list(agent.model, agent.pos, np.ndindex(agent.grid_values.shape), agent.grid_values, agent.grid_memory)
+#     return move_to_target(agent, best_pos)
 
 
 def bee_dance(agent):
