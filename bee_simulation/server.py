@@ -66,13 +66,13 @@ model_params = {
     #     "slider", "Flowerfields", 3, 1, 30, description="Initial Number of Flowerfields and accompanying Nectar"
     # ),
     "min_nectar": UserSettableParameter(
-        "slider", "Minimum Nectar", 3, 1, 10, description="Minimum nectar available in flowerfields"
+        "slider", "Minimum Nectar", 2, 1, 10, description="Minimum nectar available in flowerfields"
     ),
     "max_nectar": UserSettableParameter(
-        "slider", "Maximum Nectar", 3, 1, 10, description="Maximum nectar available in flowerfields"
+        "slider", "Maximum Nectar", 4, 1, 10, description="Maximum nectar available in flowerfields"
     ),
     "init_max_nectar_grade": UserSettableParameter(
-        "slider", "Maximum Nectar Grade", 50, 10, 100, description="Maximum nectar grade"
+        "slider", "Maximum Nectar Grade", 30, 10, 100, description="Maximum nectar grade"
     ),
     "behaviourprobability": UserSettableParameter(
         "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"

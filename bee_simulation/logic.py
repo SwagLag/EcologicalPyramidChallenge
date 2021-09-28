@@ -28,12 +28,13 @@ def plan_rational_move(agent):
 
 
 def update_state(agent):
+    if helpers.calc_distance(agent.pos, agent.hive_pos) >= agent.energy - 2:
+        return "return_to_hive"
     if len(agent.nectar_collected) > 0:
         return "return_to_hive"
-    else:
-        if len(np.argwhere(agent.grid_memory == '')) == 0:
-            return "return_to_hive"
-        return "explore"
+    if len(np.argwhere(agent.grid_memory == '')) == 0:
+        return "return_to_hive"
+    return "explore"
 
 
 def calc_grid_scores(agent):

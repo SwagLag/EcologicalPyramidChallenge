@@ -19,7 +19,7 @@ class Bee(MovingEntity):
 
         # Agent parameters
         self.perception_range = 1
-        self.max_energy = 20
+        self.max_energy = 30
 
         # Private vars
         self.type = "bee"
@@ -56,8 +56,8 @@ class Bee(MovingEntity):
 
         # Energy usage
         self.energy -= 1
-        # if self.energy <= 0:
-        #     self.model.running = False
+        if self.energy <= 0:
+            self.model.running = False
 
         print(f"Current State: {self.state}")
 
