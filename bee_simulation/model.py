@@ -59,6 +59,8 @@ class BeeSimulation(Model):
         self.collect_negative_value_nectar = collect_negative_value_nectar
         self.perception_range = perception_range
         self.max_bee_energy = max_bee_energy
+        self.init_min_nectar_grade = init_min_nectar_grade
+        self.init_max_nectar_grade = init_max_nectar_grade
         self.preset = preset
         self.max_clue_radius = max_clue_radius
         self.min_flower_distance = min_flower_distance
@@ -78,9 +80,10 @@ class BeeSimulation(Model):
         # Spawn Hives
 
         if not self.preset:
-            hive_loc = self.grid.find_empty()
+            hive_loc = (10,10)
+            # hive_loc = self.grid.find_empty()
         else:
-            hive_loc = (5, 5)
+            hive_loc = (10, 10)
 
         p = Hive(self.instance_last_id, hive_loc, self)
         self.tracked_hive = p  # For model reporter
@@ -98,7 +101,7 @@ class BeeSimulation(Model):
             self.instance_last_id += 1
 
         # Spawn Flowerfields and accompanying Nectar
-        locations_flowers = [(3, 1), (3, 4), (1, 4), (5, 8), (9, 6)]
+        locations_flowers = [(3, 1), (3, 4), (1, 4), (5, 8), (14, 5),(16, 13), (6, 4), (2, 8), (12, 18), (18, 17)]
         for i in range(0, self.init_flowers):
             if not self.preset:
                 while True:
