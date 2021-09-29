@@ -34,6 +34,8 @@ def generate_grid_gain(agent, clue_loc=None):
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
+            if agent.pos == [ix, yx]:
+                grid_values[ix, yx] = -1000
             if agent.grid_memory[ix, yx] in ['o', 'x', '/']:
                 grid_values[ix, yx] = -1000
             if type(clue_loc) is not type(None) and clue_loc[0] == ix and clue_loc[1] == yx:
