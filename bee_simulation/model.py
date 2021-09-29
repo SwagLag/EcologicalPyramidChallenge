@@ -23,6 +23,9 @@ def get_hive_energy(model):
 def get_bee_energy(model):
     return model.tracked_bee.energy
 
+def get_steps(model):
+    return model.steps_past
+
 
 # --------------------------------
 
@@ -114,6 +117,7 @@ class BeeSimulation(Model):
                 "Bee energy": get_bee_energy,
                 "Nectar stored": get_hive_energy,
                 "Nectar Collected": get_nectar_collected,
+                "Steps past": get_steps,
             },
             agent_reporters={}
         )

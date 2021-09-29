@@ -1,6 +1,6 @@
 from mesa.batchrunner import BatchRunner, BatchRunnerMP
 from bee_simulation.model import BeeSimulation, get_nectar_per_t, get_bee_energy, get_hive_energy, \
-    get_nectar_collected
+    get_nectar_collected, get_steps
 import pandas as pd
 
 # PARAMETERS:
@@ -43,6 +43,7 @@ batch_run = BatchRunner(BeeSimulation,
                             "Bee energy": get_bee_energy,
                             "Nectar stored": get_hive_energy,
                             "Nectar Collected": get_nectar_collected,
+                            "Steps past": get_steps,
                         })
 
 batch_run.run_all()

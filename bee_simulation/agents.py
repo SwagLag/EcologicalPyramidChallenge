@@ -58,7 +58,7 @@ class Bee(MovingEntity):
         elif self.state == "explore":
             grid_scores = logic.calc_grid_scores(self)
             np.set_printoptions(precision=3, suppress=True)
-            print(np.rot90(grid_scores))
+            # print(np.rot90(grid_scores))
             move_choice = np.unravel_index(np.argmax(grid_scores), grid_scores.shape)
             actions.move_to_target(self, move_choice)
 
