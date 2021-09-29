@@ -1,7 +1,7 @@
 import mesa
 import numpy as np
-import IntelligentBeesChallenge.bee_simulation.helpers as helpers
-import IntelligentBeesChallenge.bee_simulation.agents as agents
+import bee_simulation.helpers as helpers
+import bee_simulation.agents as agents
 from typing import List, Union
 
 

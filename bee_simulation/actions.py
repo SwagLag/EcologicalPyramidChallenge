@@ -2,8 +2,8 @@ import random
 
 import numpy as np
 
-from IntelligentBeesChallenge.bee_simulation import helpers
-from IntelligentBeesChallenge.bee_simulation.helpers import calc_closest_of_list
+from bee_simulation import helpers
+from bee_simulation.helpers import calc_closest_of_list
 
 
 def move_to_target(agent, target_pos):

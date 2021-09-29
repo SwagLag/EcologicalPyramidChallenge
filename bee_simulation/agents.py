@@ -1,12 +1,12 @@
 import random
 
-from IntelligentBeesChallenge.bee_simulation.movement import MovingEntity
-from IntelligentBeesChallenge.bee_simulation.static_object import StaticObject
+from bee_simulation.movement import MovingEntity
+from bee_simulation.static_object import StaticObject
 
-import IntelligentBeesChallenge.bee_simulation.perception as perception
-import IntelligentBeesChallenge.bee_simulation.logic as logic
-import IntelligentBeesChallenge.bee_simulation.actions as actions
-import IntelligentBeesChallenge.bee_simulation.helpers as helpers
+import bee_simulation.perception as perception
+import bee_simulation.logic as logic
+import bee_simulation.actions as actions
+import bee_simulation.helpers as helpers
 
 import numpy as np
 

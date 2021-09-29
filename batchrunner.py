@@ -1,5 +1,5 @@
 from mesa.batchrunner import BatchRunner, BatchRunnerMP
-from IntelligentBeesChallenge.bee_simulation.model import BeeSimulation, get_nectar_per_t, get_bee_energy, get_hive_energy, \
+from bee_simulation.model import BeeSimulation, get_nectar_per_t, get_bee_energy, get_hive_energy, \
     get_nectar_collected
 import pandas as pd
 

@@ -1,4 +1,4 @@
-from IntelligentBeesChallenge.bee_simulation.agents import Bee, Nectar, Hive, FlowerField
+from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from mesa import Model
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
