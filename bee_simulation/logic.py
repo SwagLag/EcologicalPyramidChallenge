@@ -1,7 +1,6 @@
 import mesa
 import numpy as np
 import IntelligentBeesChallenge.bee_simulation.helpers as helpers
-import logic
 import IntelligentBeesChallenge.bee_simulation.agents as agents
 from typing import List, Union
 
@@ -57,7 +56,7 @@ def touch(agent_a: mesa.Agent, agent_b: mesa.Agent):
     return False
 
 
-def bee_die(bee: agents.Bee):
+def bee_die(bee):
     """∀a ((Bee(a) ˄ NoEnergy(a)) -> Die(a)). When a bee has nog energy left, it will die."""
 
     if bee.energy <= 0:

@@ -64,16 +64,12 @@ class Bee(MovingEntity):
 
             nectar_onsite = [a for a in self.model.grid[self.pos] if a.type == "nectar"]
 
-
-
             if len(nectar_onsite) > 0:
                 nectar_pos = nectar_onsite[0].pos
                 if nectar_pos == self.pos and nectar_pos == move_choice:
 
-
                     if grid_scores[nectar_pos] > 0 or self.model.collect_negative_value_nectar:
                         actions.collect_nectar(self, nectar_onsite[0])
-
 
                     else:
                         self.grid_memory[nectar_pos] = '/'

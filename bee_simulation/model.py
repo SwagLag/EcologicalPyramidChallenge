@@ -105,6 +105,7 @@ class BeeSimulation(Model):
                 "Nectar stored": get_hive_energy,
                 "Nectar Collected": get_nectar_collected,
             },
+            agent_reporters={}
         )
         self.running = True
         self.datacollector.collect(self)
@@ -113,7 +114,7 @@ class BeeSimulation(Model):
         # tell all the agents in the model to run their step function
         self.schedule.step()
         # collect data
-        self.steps_past+=1
+        self.steps_past += 1
         self.datacollector.collect(self)
 
     def run_model(self):
