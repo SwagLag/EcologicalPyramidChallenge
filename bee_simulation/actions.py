@@ -31,7 +31,11 @@ def bee_dance(agent):
     agent.clue_loc = None
     agent.clue_grade = None
 
-    nectar_positions = np.argwhere(agent.grid_memory == 'n')
+    nectar_positions = []
+    for ix, x in enumerate(agent.grid_memory):
+        for yx, y in enumerate(x):
+            if agent.grid_memory[ix, yx] == 'n':
+                nectar_positions.append([ix, yx])
 
     hive_pos = agent.hive_pos
 
@@ -46,7 +50,6 @@ def bee_dance(agent):
         true_clue_loc = random.choice(nectar_positions)
         clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, 5)
         print(f"True loc:{true_clue_loc}, Clue loc:{clue_loc}")
-        # TODO: Fix this bug
         nectar = [a for a in agent.model.grid[true_clue_loc] if a.type == "nectar"]
         agent.clue_grade = nectar[0].grade
         agent.clue_loc = clue_loc

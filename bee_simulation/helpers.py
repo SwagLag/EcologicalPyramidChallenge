@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 import pandas as pd
-from scipy.stats import expon
+import scipy.stats as stats
 
 
 def calc_distance(origin_pos, target_pos):
@@ -37,25 +37,32 @@ def generate_grid_gain(agent, clue_loc=None, clue_grade=None):
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
-            if agent.grid_memory[ix, yx] in ['o', 'x', '/']:
-                grid_values[ix, yx] = -1000
-            if type(clue_loc) is not type(None) and clue_loc[0] == ix and clue_loc[1] == yx:
-                grid_values[ix, yx] = clue_grade
-                # n = [a for a in agent.model.grid[ix, yx] if a.type == 'nectar']
-                # if len(n) > 0:
-                #     grid_values[ix, yx] = n[0].grade
+            if type(clue_loc) is not type(None):
+                # Clue distance
+                clue_distance = calc_distance([ix, yx], clue_loc)
+                grid_values[ix, yx] = clue_grade * calc_distance_score_multiplier(clue_distance)
             if agent.grid_memory[ix, yx] == 'n':
                 n = [a for a in agent.model.grid[ix, yx] if a.type == 'nectar']
                 if len(n) > 0:
                     grid_values[ix, yx] = n[0].grade
+            if agent.pos == [ix, yx]:
+                grid_values[ix, yx] = -1000
+            if agent.grid_memory[ix, yx] in ['o', 'x', '/']:
+                grid_values[ix, yx] = -1000
 
     return grid_values
 
+def calc_distance_score_multiplier(distance):
+    n = 100
+    x = np.linspace(stats.expon.ppf(0.01),
+                    stats.expon.ppf(0.99), n)
+    multiplier = len(np.nonzero(stats.expon.cdf(x, loc=distance))[0])/n
+    return multiplier
 
 def gen_clue_distance(max_radius):
-    x = np.linspace(expon.ppf(0.01),
-                    expon.ppf(0.99), 100)
-    x = expon.pdf(x)
+    x = np.linspace(stats.expon.ppf(0.01),
+                    stats.expon.ppf(0.99), 100)
+    x = stats.expon.pdf(x)
 
     df = pd.DataFrame((x * max_radius))
     df = df.round()
