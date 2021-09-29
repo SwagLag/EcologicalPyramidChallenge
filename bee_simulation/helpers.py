@@ -52,20 +52,24 @@ def generate_grid_gain(agent, clue_loc=None, clue_grade=None):
 
     return grid_values
 
+
+def gen_linspace():
+    global global_linspace_ppf, global_linspace_pdf
+    global_linspace_ppf = np.linspace(stats.expon.ppf(0.01),
+                                      stats.expon.ppf(0.99), 100)
+    global_linspace_pdf = stats.expon.pdf(global_linspace_ppf)
+
+
 def calc_distance_score_multiplier(distance):
-    n = 100
-    x = np.linspace(stats.expon.ppf(0.01),
-                    stats.expon.ppf(0.99), n)
-    multiplier = len(np.nonzero(stats.expon.cdf(x, loc=distance))[0])/n
+    global global_linspace_ppf
+    multiplier = len(np.nonzero(stats.expon.cdf(global_linspace_ppf, loc=distance))[0]) / 100
     return multiplier
 
-def gen_clue_distance(max_radius):
-    x = np.linspace(stats.expon.ppf(0.01),
-                    stats.expon.ppf(0.99), 100)
-    x = stats.expon.pdf(x)
 
-    df = pd.DataFrame((x * max_radius))
-    df = df.round()
+def gen_clue_distance(max_radius):
+    global global_linspace_pdf
+    df = pd.DataFrame((global_linspace_pdf * max_radius)).round()
+    # df = df.round()
     return max(max_radius, (int(df.sample(1)[0])))
 
 

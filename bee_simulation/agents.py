@@ -93,7 +93,8 @@ class FlowerField(StaticObject):
     def __init__(self, unique_id, pos, model, max_nectar_grade, respawn_interval):
         super().__init__(unique_id, pos, model)
         self.type = "flowerfield"
-        self.grade = random.randrange(1, max_nectar_grade + 1)
+        # self.grade = random.randrange(1, max_nectar_grade + 1)
+        self.grade = max_nectar_grade
         self.respawn_interval = respawn_interval
         self.steps_left_for_respawn = self.respawn_interval
 

@@ -64,30 +64,33 @@ model_params = {
     # ),
     "t1":UserSettableParameter('static_text', value="Space parameters"),
     "init_flowers": UserSettableParameter(
-        "slider", "# of flowerfields", 5, 1, 20, description="Number of flower fields"
+        "slider", "# of flowerfields", 10, 1, 30, description="Number of flower fields"
+    ),
+    "min_flower_distance": UserSettableParameter(
+        "slider", "Minimal flower distance", 8, 1, 15, description="Minimal flower distance"
     ),
     "min_nectar": UserSettableParameter(
         "slider", "Initial minimum # of nectar per flower", 2, 1, 10, description="Minimum nectar available in flowerfields"
     ),
     "max_nectar": UserSettableParameter(
-        "slider", "Initial maximum # of nectar per flower", 4, 1, 10, description="Maximum nectar available in flowerfields"
+        "slider", "Initial maximum # of nectar per flower", 2, 1, 10, description="Maximum nectar available in flowerfields"
     ),
     "t2":UserSettableParameter('static_text', value="Nectar parameters"),
     "init_min_nectar_grade": UserSettableParameter(
-        "slider", "Minimum nectar grade", 5, 1, 100, description="Minimum nectar grade"
+        "slider", "Minimum nectar grade", 20, 1, 100, description="Minimum nectar grade"
     ),
     "init_max_nectar_grade": UserSettableParameter(
-        "slider", "Maximum nectar grade", 25, 10, 50, description="Maximum nectar grade"
+        "slider", "Maximum nectar grade", 20, 10, 100, description="Maximum nectar grade"
     ),
     "nectar_respawn_interval": UserSettableParameter(
-        "slider", "Nectar respawn interval", 75, 10, 200, description="Nectar respawn interval"
+        "slider", "Nectar respawn interval", 150, 10, 200, description="Nectar respawn interval"
     ),
     "t3": UserSettableParameter('static_text', value="Bee parameters"),
     "max_bee_energy": UserSettableParameter(
-        "slider", "Max bee energy", 30, 10, 100, description="Max bee energy"
+        "slider", "Max bee energy", 50, 10, 100, description="Max bee energy"
     ),
     "max_clue_radius": UserSettableParameter(
-        "slider", "Max clue radius", 0, 3, 10, description="Max # of tiles a clue can be off"
+        "slider", "Max clue radius", 10, 1, 10, description="Max # of tiles a clue can be off"
     ),
     "collect_negative_value_nectar": UserSettableParameter(
         'checkbox', 'Collect negative value nectar', value=False
@@ -97,7 +100,7 @@ model_params = {
         choices=[1, 2, 3]
     ),
     "preset":UserSettableParameter(
-        'checkbox', 'Preset field?', value=False
+        'checkbox', 'Preset field?', value=True
     ),
     # "behaviourprobability": UserSettableParameter(
     #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
@@ -116,7 +119,7 @@ model_params = {
 }
 
 # set the portrayal function and size of the canvas for visualization
-canvas_element = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+canvas_element = CanvasGrid(agent_portrayal, 20, 20, 700, 700)
 
 # map data to chart in the ChartModule
 npt_element = ChartModule(
