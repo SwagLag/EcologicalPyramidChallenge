@@ -93,6 +93,9 @@ model_params = {
         'choice', 'Perception range', value=1,
         choices=[1, 2, 3]
     ),
+    "preset":UserSettableParameter(
+        'checkbox', 'Preset field?', value=False
+    ),
     # "behaviourprobability": UserSettableParameter(
     #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
     #                                                                    "explore instead of going for the clue,"
