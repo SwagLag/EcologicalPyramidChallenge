@@ -86,6 +86,9 @@ model_params = {
     "max_bee_energy": UserSettableParameter(
         "slider", "Max bee energy", 30, 10, 100, description="Max bee energy"
     ),
+    "max_clue_radius": UserSettableParameter(
+        "slider", "Max clue radius", 0, 3, 10, description="Max # of tiles a clue can be off"
+    ),
     "collect_negative_value_nectar": UserSettableParameter(
         'checkbox', 'Collect negative value nectar', value=False
     ),

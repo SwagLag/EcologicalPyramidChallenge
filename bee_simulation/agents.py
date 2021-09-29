@@ -51,7 +51,7 @@ class Bee(MovingEntity):
         # Perception
         logic.update_memory(self, perception.percept(self))
         self.state = logic.update_state(self)
-        print(f"Current State: {self.state}")
+        # print(f"Current State: {self.state}")
 
         # Logic
         if self.state == "return_to_hive":

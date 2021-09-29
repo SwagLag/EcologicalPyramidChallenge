@@ -48,8 +48,8 @@ def bee_dance(agent):
     if len(nectar_positions) > 0:
         # Put clue into grid values
         true_clue_loc = random.choice(nectar_positions)
-        clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, 5)
-        print(f"True loc:{true_clue_loc}, Clue loc:{clue_loc}")
+        clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, agent.model.max_clue_radius)
+        # print(f"True loc:{true_clue_loc}, Clue loc:{clue_loc}")
         nectar = [a for a in agent.model.grid[true_clue_loc] if a.type == "nectar"]
         agent.clue_grade = nectar[0].grade
         agent.clue_loc = clue_loc

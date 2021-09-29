@@ -18,7 +18,7 @@ def update_memory(agent, perception, show_grid=False):
 
 
 def update_state(agent):
-    if helpers.calc_distance(agent.pos, agent.hive_pos) >= agent.energy - 2:
+    if helpers.calc_distance(agent.pos, agent.hive_pos) >= agent.energy - 1 and agent.pos != agent.hive_pos:
         # ∀a ∃k ((Bee(a) ˄ Beehive(k) ˄ NeedToGoHome(TicksToHome(a, k), TicksOfEnergy(a)) -> GoHome(a, b)))
         # When a bee has just enough energy to go home, he will go home
         return "return_to_hive"
