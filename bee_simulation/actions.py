@@ -7,19 +7,34 @@ from bee_simulation.helpers import calc_closest_of_list
 
 
 def move_to_target(agent, target_pos):
+    first_x = random.choice([True, False])
     # X then Y method
-    if target_pos[0] < agent.pos[0]:
-        agent.model.grid.move_agent(agent, (agent.pos[0] - 1, agent.pos[1]))
-    elif target_pos[0] > agent.pos[0]:
-        agent.model.grid.move_agent(agent, (agent.pos[0] + 1, agent.pos[1]))
-    elif target_pos[1] < agent.pos[1]:
-        agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] - 1))
-    elif target_pos[1] > agent.pos[1]:
-        agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] + 1))
-    elif target_pos[0] == agent.pos[0] and target_pos[1] == agent.pos[1]:
-        print("move_to_target origin same as target")
+    if first_x:
+        if target_pos[0] < agent.pos[0]:
+            agent.model.grid.move_agent(agent, (agent.pos[0] - 1, agent.pos[1]))
+        elif target_pos[0] > agent.pos[0]:
+            agent.model.grid.move_agent(agent, (agent.pos[0] + 1, agent.pos[1]))
+        elif target_pos[1] < agent.pos[1]:
+            agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] - 1))
+        elif target_pos[1] > agent.pos[1]:
+            agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] + 1))
+        elif target_pos[0] == agent.pos[0] and target_pos[1] == agent.pos[1]:
+            print("move_to_target origin same as target")
+        else:
+            exit(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
     else:
-        exit(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
+        if target_pos[1] < agent.pos[1]:
+            agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] - 1))
+        elif target_pos[1] > agent.pos[1]:
+            agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] + 1))
+        elif target_pos[0] < agent.pos[0]:
+            agent.model.grid.move_agent(agent, (agent.pos[0] - 1, agent.pos[1]))
+        elif target_pos[0] > agent.pos[0]:
+            agent.model.grid.move_agent(agent, (agent.pos[0] + 1, agent.pos[1]))
+        elif target_pos[0] == agent.pos[0] and target_pos[1] == agent.pos[1]:
+            print("move_to_target origin same as target")
+        else:
+            exit(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
 
 
 def return_to_hive(agent):

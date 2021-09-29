@@ -5,6 +5,7 @@ from mesa.datacollection import DataCollector
 from mesa.time import RandomActivation
 
 import numpy as np
+import bee_simulation.helpers as helpers
 
 
 # Start of datacollector functions
@@ -31,9 +32,9 @@ def get_steps(model):
 
 class BeeSimulation(Model):
     # grid height
-    grid_h = 10
+    grid_h = 20
     # grid width
-    grid_w = 10
+    grid_w = 20
 
     """init parameters "init_people", "rich_threshold", and "reserve_percent"
        are all UserSettableParameters"""
@@ -41,9 +42,10 @@ class BeeSimulation(Model):
     def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
-                 perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=3):
+                 perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=3, min_flower_distance=5):
 
         super().__init__()
+        helpers.gen_linspace()
         self.height = height
         self.width = width
         self.steps_past = 0
@@ -59,6 +61,7 @@ class BeeSimulation(Model):
         self.max_bee_energy = max_bee_energy
         self.preset = preset
         self.max_clue_radius = max_clue_radius
+        self.min_flower_distance = min_flower_distance
 
         # Agent parameters
         # self.behaviourprobability = behaviourprobability
@@ -98,7 +101,10 @@ class BeeSimulation(Model):
         locations_flowers = [(3, 1), (3, 4), (1, 4), (5, 8), (9, 6)]
         for i in range(0, self.init_flowers):
             if not self.preset:
-                flower_loc = self.grid.find_empty()
+                while True:
+                    flower_loc = self.grid.find_empty()
+                    if helpers.calc_distance(flower_loc, hive_loc) >= self.min_flower_distance:
+                        break
             else:
                 flower_loc = locations_flowers[i]
             grade = np.random.randint(init_min_nectar_grade, init_max_nectar_grade + 1)
