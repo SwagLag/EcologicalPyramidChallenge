@@ -2,8 +2,8 @@ import random
 
 import numpy as np
 
-from bee_simulation import helpers
-from bee_simulation.helpers import calc_closest_of_list
+from IntelligentBeesChallenge.bee_simulation import helpers
+from IntelligentBeesChallenge.bee_simulation.helpers import calc_closest_of_list
 
 
 def move_to_target(agent, target_pos):
@@ -52,7 +52,13 @@ def refill_energy(agent):
         agent.energy += hive.energy
         hive.energy = 0
 
+
 def collect_nectar(agent, nectar):
+    """∀a ∀b ((Bee(a) ˄ FlowerField(b) ˄ ¬ HasNectar(a) ˄ (Touch(a, b) ˄ Nectar(b) ) -> (GainNectar(a) ˄
+    LoseNectar(b))))).
+    When a bee stands on a flowerfield, hasn't gathered any nectar yet and the flowerfield does contain nectar, then
+    the bee will collect this nectar."""
+
     if len(agent.nectar_collected) == 0:
         agent.nectar_collected.append(nectar.grade)
         if nectar.amount == 1:
@@ -60,6 +66,7 @@ def collect_nectar(agent, nectar):
             agent.grid_memory[agent.pos] = 'o'
         else:
             nectar.amount -= 1
+
 
 def dropoff_nectar(agent):
     hives = [a for a in agent.model.grid[agent.pos] if a.type == "hive"]

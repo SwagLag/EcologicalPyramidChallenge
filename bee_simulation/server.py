@@ -1,8 +1,8 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule, BarChartModule, TextVisualization
 from mesa.visualization.UserParam import UserSettableParameter
-from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
-from bee_simulation.model import BeeSimulation
+from IntelligentBeesChallenge.bee_simulation.agents import Bee, Nectar, Hive, FlowerField
+from IntelligentBeesChallenge.bee_simulation.model import BeeSimulation
 
 # Green
 BEE_COLOR = "#000000"

@@ -1,12 +1,12 @@
 import random
 
-from bee_simulation.movement import MovingEntity
-from bee_simulation.static_object import StaticObject
+from IntelligentBeesChallenge.bee_simulation.movement import MovingEntity
+from IntelligentBeesChallenge.bee_simulation.static_object import StaticObject
 
-import bee_simulation.perception as perception
-import bee_simulation.logic as logic
-import bee_simulation.actions as actions
-import bee_simulation.helpers as helpers
+import IntelligentBeesChallenge.bee_simulation.perception as perception
+import IntelligentBeesChallenge.bee_simulation.logic as logic
+import IntelligentBeesChallenge.bee_simulation.actions as actions
+import IntelligentBeesChallenge.bee_simulation.helpers as helpers
 
 import numpy as np
 
@@ -63,11 +63,18 @@ class Bee(MovingEntity):
             actions.move_to_target(self, move_choice)
 
             nectar_onsite = [a for a in self.model.grid[self.pos] if a.type == "nectar"]
+
+
+
             if len(nectar_onsite) > 0:
                 nectar_pos = nectar_onsite[0].pos
-                if nectar_pos == self.pos and nectar_pos==move_choice:
+                if nectar_pos == self.pos and nectar_pos == move_choice:
+
+
                     if grid_scores[nectar_pos] > 0 or self.model.collect_negative_value_nectar:
                         actions.collect_nectar(self, nectar_onsite[0])
+
+
                     else:
                         self.grid_memory[nectar_pos] = '/'
 
@@ -75,13 +82,13 @@ class Bee(MovingEntity):
             exit(f"Invalid State: {self.state}")
 
         # Handle nectar
-        if self.pos == self.hive_pos:
+        if self.pos == self.hive_pos:  # ========================================== touch?
             actions.dropoff_nectar(self)
             actions.refill_energy(self)
 
         # Energy usage
         self.energy -= 1
-        if self.energy <= 0:
+        if self.energy <= 0:  # =================================================== bee_die?
             self.model.running = False
 
 
@@ -98,13 +105,14 @@ class FlowerField(StaticObject):
         if self.steps_left_for_respawn <= 0:
             self.steps_left_for_respawn = self.respawn_interval
 
-            nectar_on_loc = [a for a in self.model.schedule.agents if a.type == "nectar" and a.pos == self.pos]
+            #  a for a in self.model.schedule.agents if isinstance(a, Nectar) and touch()
+            nectar_on_loc = [a for a in self.model.schedule.agents if a.type == "nectar" and a.pos == self.pos]  # Touch????
             if len(nectar_on_loc) > 0:
                 nectar_on_loc[0].amount += 1
             else:
-                p = Nectar(self.model.instance_last_id, self.pos, self, 1, self.grade)
-                self.model.grid.place_agent(p, self.pos)
-                self.model.schedule.add(p)
+                nectar = Nectar(self.model.instance_last_id, self.pos, self, 1, self.grade)
+                self.model.grid.place_agent(nectar, self.pos)
+                self.model.schedule.add(nectar)
                 self.model.instance_last_id += 1
 
 

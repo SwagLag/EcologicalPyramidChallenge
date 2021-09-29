@@ -1,4 +1,4 @@
-from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
+from IntelligentBeesChallenge.bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from mesa import Model
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
@@ -46,7 +46,6 @@ class BeeSimulation(Model):
         self.steps_past = 0
 
         # Server parameters
-        min_nectar = min_nectar
         if min_nectar > max_nectar:
             min_nectar = max_nectar
         self.init_bees = init_bees

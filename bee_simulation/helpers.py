@@ -1,3 +1,4 @@
+import mesa
 import numpy as np
 
 
@@ -45,3 +46,5 @@ def generate_grid_gain(agent, clue_loc=None):
                     grid_values[ix, yx] = n[0].grade
 
     return grid_values
+
+
