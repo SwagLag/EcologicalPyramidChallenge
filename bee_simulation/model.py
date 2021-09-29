@@ -38,7 +38,7 @@ class BeeSimulation(Model):
     def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
-                 perception_range=1, max_bee_energy=30):
+                 perception_range=1, max_bee_energy=30, pre=preset):
 
         super().__init__()
         self.height = height
@@ -54,6 +54,7 @@ class BeeSimulation(Model):
         self.collect_negative_value_nectar = collect_negative_value_nectar
         self.perception_range = perception_range
         self.max_bee_energy = max_bee_energy
+        self.preset = pre
 
         # Agent parameters
         # self.behaviourprobability = behaviourprobability
@@ -68,7 +69,11 @@ class BeeSimulation(Model):
         self.instance_last_id = 0
 
         # Spawn Hives
-        hive_loc = self.grid.find_empty()
+
+        if not self.preset:
+            hive_loc = self.grid.find_empty()
+        else:
+            hive_loc = (5, 5)
         p = Hive(self.instance_last_id, hive_loc, self)
         self.tracked_hive = p  # For model reporter
         self.grid.place_agent(p, hive_loc)
@@ -85,8 +90,12 @@ class BeeSimulation(Model):
             self.instance_last_id += 1
 
         # Spawn Flowerfields and accompanying Nectar
+        locations_flowers = [(3, 1), (3, 4), (1, 4), (5, 8), (9, 6)]
         for i in range(0, self.init_flowers):
-            flower_loc = self.grid.find_empty()
+            if not self.preset:
+                flower_loc = self.grid.find_empty()
+            else:
+                flower_loc = locations_flowers[i]
             grade = np.random.randint(init_min_nectar_grade, init_max_nectar_grade + 1)
             p = FlowerField(self.instance_last_id, flower_loc, self, grade, nectar_respawn_interval)
             self.schedule.add(p)
@@ -109,6 +118,7 @@ class BeeSimulation(Model):
         )
         self.running = True
         self.datacollector.collect(self)
+
 
     def step(self):
         # tell all the agents in the model to run their step function
