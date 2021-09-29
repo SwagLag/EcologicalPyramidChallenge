@@ -24,6 +24,7 @@ class Bee(MovingEntity):
         self.nectar_collected = []
         self.energy = self.max_energy
         self.clue_loc = None
+        self.clue_grade = None
 
         # State
         self.state = "return_to_hive"

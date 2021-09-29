@@ -26,12 +26,12 @@ def update_state(agent):
 def calc_grid_scores(agent):
     grid_cost_base = helpers.generate_grid_costs(agent, nexus_pos=agent.hive_pos)
     grid_cost_cpos = helpers.generate_grid_costs(agent, nexus_pos=agent.pos, from_agent=True)
-    grid_gain_wclue = helpers.generate_grid_gain(agent, clue_loc=agent.clue_loc)
+    grid_gain_gain = helpers.generate_grid_gain(agent, clue_loc=agent.clue_loc, clue_grade=agent.clue_grade)
 
     # print("grid_cost_base:\n",np.rot90(grid_cost_base))
     # print("grid_cost_cpos:\n",np.rot90(grid_cost_cpos))
-    # print("grid_gain_wclue:\n",np.rot90(grid_gain_wclue))
+    # print("grid_gain_wclue:\n",np.rot90(grid_gain_gain))
 
-    grid_scores = - grid_cost_base - grid_cost_cpos + grid_gain_wclue
+    grid_scores = - grid_cost_base - grid_cost_cpos + grid_gain_gain
     grid_scores = np.clip(grid_scores, -1000, 1000)
     return grid_scores

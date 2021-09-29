@@ -28,7 +28,11 @@ def return_to_hive(agent):
 
 
 def bee_dance(agent):
-    nectar_pos = np.argwhere(agent.grid_memory == 'n')
+    agent.clue_loc = None
+    agent.clue_grade = None
+
+    nectar_positions = np.argwhere(agent.grid_memory == 'n')
+
     hive_pos = agent.hive_pos
 
     # Wipe grid memory
@@ -36,11 +40,16 @@ def bee_dance(agent):
 
     # Reset grid values
     agent.grid_values = helpers.generate_grid_costs(agent, hive_pos)
-    if len(nectar_pos) > 0:
-        # Put clue into grid values
-        clue_loc = random.choice(nectar_pos)
-        agent.clue_loc = clue_loc
 
+    if len(nectar_positions) > 0:
+        # Put clue into grid values
+        true_clue_loc = random.choice(nectar_positions)
+        clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, 5)
+        print(f"True loc:{true_clue_loc}, Clue loc:{clue_loc}")
+        # TODO: Fix this bug
+        nectar = [a for a in agent.model.grid[true_clue_loc] if a.type == "nectar"]
+        agent.clue_grade = nectar[0].grade
+        agent.clue_loc = clue_loc
 
 def refill_energy(agent):
     hive = [a for a in agent.model.grid[agent.pos] if a.type == "hive"][0]
