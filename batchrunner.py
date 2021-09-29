@@ -47,4 +47,6 @@ batch_run = BatchRunner(BeeSimulation,
 
 batch_run.run_all()
 test = batch_run.get_model_vars_dataframe()
+test2 = batch_run.get_collector_model()
 print(test.head())
+print(test2)
