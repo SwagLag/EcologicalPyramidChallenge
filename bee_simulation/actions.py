@@ -60,7 +60,7 @@ def bee_dance(agent):
     # Reset grid values
     agent.grid_values = helpers.generate_grid_costs(agent, hive_pos)
 
-    if len(nectar_positions) > 0:
+    if len(nectar_positions) > 0 and agent.clue_grade is not None:
         # Put clue into grid values
         true_clue_loc = random.choice(nectar_positions)
         clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, agent.model.max_clue_radius)

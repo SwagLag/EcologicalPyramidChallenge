@@ -136,6 +136,8 @@ class BeeSimulation(Model):
 
 
     def step(self):
+        if sum([x.alive for x in self.schedule.agents if isinstance(x,Bee)]) == 0:
+            self.running = False
         # tell all the agents in the model to run their step function
         self.schedule.step()
         # collect data

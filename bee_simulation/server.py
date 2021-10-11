@@ -29,6 +29,9 @@ def agent_portrayal(agent):
         else:
             portrayal["Color"] = "Gray"
 
+        if agent.alive is False:
+            portrayal["Color"] = "Red"
+
     if isinstance(agent, Nectar):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.3
@@ -59,9 +62,9 @@ def agent_portrayal(agent):
 
 # dictionary of user settable parameters - these map to the model __init__ parameters
 model_params = {
-    # "init_bees": UserSettableParameter(
-    #     "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
-    # ),
+    "init_bees": UserSettableParameter(
+        "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
+    ),
     "t1":UserSettableParameter('static_text', value="Space parameters"),
     "init_flowers": UserSettableParameter(
         "slider", "# of flowerfields", 10, 1, 30, description="Number of flower fields"

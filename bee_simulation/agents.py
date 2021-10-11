@@ -25,6 +25,7 @@ class Bee(MovingEntity):
         self.energy = self.max_energy
         self.clue_loc = None
         self.clue_grade = None
+        self.alive = True
 
         # State
         self.state = "return_to_hive"
@@ -48,45 +49,46 @@ class Bee(MovingEntity):
         return grid_memory
 
     def step(self):
-        # Perception
-        logic.update_memory(self, perception.percept(self))
-        self.state = logic.update_state(self)
-        # print(f"Current State: {self.state}")
+        if self.alive:
+            # Perception
+            logic.update_memory(self, perception.percept(self))
+            self.state = logic.update_state(self)
+            print(f"Current State: {self.state} ID: {self.unique_id}")
 
-        # Logic
-        if self.state == "return_to_hive":
-            actions.return_to_hive(self)
-        elif self.state == "explore":
-            grid_scores = logic.calc_grid_scores(self)
-            np.set_printoptions(precision=1, suppress=True)
-            # print(np.rot90(grid_scores))
-            move_choice = np.unravel_index(np.argmax(grid_scores), grid_scores.shape)
-            actions.move_to_target(self, move_choice)
+            # Logic
+            if self.state == "return_to_hive":
+                actions.return_to_hive(self)
+            elif self.state == "explore":
+                grid_scores = logic.calc_grid_scores(self)
+                np.set_printoptions(precision=1, suppress=True)
+                # print(np.rot90(grid_scores))
+                move_choice = np.unravel_index(np.argmax(grid_scores), grid_scores.shape)
+                actions.move_to_target(self, move_choice)
 
-            nectar_onsite = [a for a in self.model.grid[self.pos] if a.type == "nectar"]
+                nectar_onsite = [a for a in self.model.grid[self.pos] if a.type == "nectar"]
 
-            if len(nectar_onsite) > 0:
-                nectar_pos = nectar_onsite[0].pos
-                if nectar_pos == self.pos and nectar_pos == move_choice:
+                if len(nectar_onsite) > 0:
+                    nectar_pos = nectar_onsite[0].pos
+                    if nectar_pos == self.pos and nectar_pos == move_choice:
 
-                    if grid_scores[nectar_pos] > 0 or self.model.collect_negative_value_nectar:
-                        actions.collect_nectar(self, nectar_onsite[0])
+                        if grid_scores[nectar_pos] > 0 or self.model.collect_negative_value_nectar:
+                            actions.collect_nectar(self, nectar_onsite[0])
 
-                    else:
-                        self.grid_memory[nectar_pos] = '/'
+                        else:
+                            self.grid_memory[nectar_pos] = '/'
 
-        else:
-            exit(f"Invalid State: {self.state}")
+            else:
+                exit(f"Invalid State: {self.state}")
 
-        # Handle nectar
-        if self.pos == self.hive_pos:  # ========================================== touch?
-            actions.dropoff_nectar(self)
-            actions.refill_energy(self)
+            # Handle nectar
+            if self.pos == self.hive_pos:  # ========================================== touch?
+                actions.dropoff_nectar(self)
+                actions.refill_energy(self)
 
-        # Energy usage
-        self.energy -= 1
-        if self.energy <= 0:  # =================================================== bee_die?
-            self.model.running = False
+            # Energy usage
+            self.energy -= 1
+            if self.energy <= 0:  # =================================================== bee_die?
+                self.alive = False
 
 
 class FlowerField(StaticObject):
