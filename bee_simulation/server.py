@@ -23,6 +23,7 @@ def agent_portrayal(agent):
         portrayal["r"] = 0.5
         portrayal["Layer"] = 3
         portrayal["Filled"] = "true"
+        # portrayal["text"] = f"State:{agent.state}. MovingTo: {agent.clue_loc}"
 
         if len(agent.nectar_collected) > 0:
             portrayal["Color"] = "Black"
@@ -63,7 +64,7 @@ def agent_portrayal(agent):
 # dictionary of user settable parameters - these map to the model __init__ parameters
 model_params = {
     "init_bees": UserSettableParameter(
-        "slider", "Bees", 1, 1, 10, description="Initial Number of Bees"
+        "slider", "Bees", 3, 1, 10, description="Initial Number of Bees"
     ),
     "t1":UserSettableParameter('static_text', value="Space parameters"),
     "init_flowers": UserSettableParameter(
@@ -83,7 +84,7 @@ model_params = {
         "slider", "Minimum nectar grade", 20, 1, 100, description="Minimum nectar grade"
     ),
     "init_max_nectar_grade": UserSettableParameter(
-        "slider", "Maximum nectar grade", 20, 10, 100, description="Maximum nectar grade"
+        "slider", "Maximum nectar grade", 50, 10, 100, description="Maximum nectar grade"
     ),
     "nectar_respawn_interval": UserSettableParameter(
         "slider", "Nectar respawn interval", 150, 10, 200, description="Nectar respawn interval"
@@ -93,7 +94,7 @@ model_params = {
         "slider", "Max bee energy", 50, 10, 100, description="Max bee energy"
     ),
     "max_clue_radius": UserSettableParameter(
-        "slider", "Max clue radius", 10, 1, 10, description="Max # of tiles a clue can be off"
+        "slider", "Max clue radius", 1, 0, 10, description="Max # of tiles a clue can be off"
     ),
     "collect_negative_value_nectar": UserSettableParameter(
         'checkbox', 'Collect negative value nectar', value=False
@@ -103,7 +104,7 @@ model_params = {
         choices=[1, 2, 3]
     ),
     "preset":UserSettableParameter(
-        'checkbox', 'Preset field?', value=True
+        'checkbox', 'Preset field?', value=False
     ),
     # "behaviourprobability": UserSettableParameter(
     #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"

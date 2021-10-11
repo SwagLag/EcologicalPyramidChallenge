@@ -9,6 +9,10 @@ def update_memory(agent, perception, show_grid=False):
     for tile in perception:
         for entity in agent.model.grid[tile]:
             if entity.type == "nectar" and agent.grid_memory[tile] != '/':  # remember nectar locations
+                if agent.init_clue == True:
+                    agent.init_clue = False
+                    agent.clue_loc = None
+                    agent.clue_grade = 0
                 agent.grid_memory[tile] = "nectar"
         if agent.grid_memory[tile] == '':  # '' is unobserved
             agent.grid_memory[tile] = 'o'  # o for observed

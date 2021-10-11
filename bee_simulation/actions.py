@@ -60,14 +60,24 @@ def bee_dance(agent):
     # Reset grid values
     agent.grid_values = helpers.generate_grid_costs(agent, hive_pos)
 
-    if len(nectar_positions) > 0 and agent.clue_grade is not None:
+    if len(nectar_positions) > 0:
+        agent.init_clue = False
         # Put clue into grid values
         true_clue_loc = random.choice(nectar_positions)
         clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, agent.model.max_clue_radius)
         # print(f"True loc:{true_clue_loc}, Clue loc:{clue_loc}")
         nectar = [a for a in agent.model.grid[true_clue_loc] if a.type == "nectar"]
-        agent.clue_grade = nectar[0].grade
-        agent.clue_loc = clue_loc
+        if len(nectar) > 0:
+            agent.clue_grade = nectar[0].grade
+            agent.clue_loc = clue_loc
+        else:
+            agent.init_clue = True
+            agent.clue_loc = (random.randint(0, agent.model.height), random.randint(0, agent.model.width))
+            agent.clue_grade = 1000
+    else:
+        agent.init_clue = True
+        agent.clue_loc = (random.randint(0,agent.model.height), random.randint(0,agent.model.width))
+        agent.clue_grade = 1000
 
 def refill_energy(agent):
     hive = [a for a in agent.model.grid[agent.pos] if a.type == "hive"][0]

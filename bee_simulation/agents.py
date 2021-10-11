@@ -23,8 +23,9 @@ class Bee(MovingEntity):
         self.type = "bee"
         self.nectar_collected = []
         self.energy = self.max_energy
-        self.clue_loc = None
-        self.clue_grade = None
+        self.clue_loc = (random.randint(0,self.model.height), random.randint(0,self.model.width))
+        self.clue_grade = 1000
+        self.init_clue = True
         self.alive = True
 
         # State
@@ -53,7 +54,7 @@ class Bee(MovingEntity):
             # Perception
             logic.update_memory(self, perception.percept(self))
             self.state = logic.update_state(self)
-            print(f"Current State: {self.state} ID: {self.unique_id}")
+            # print(f"Current State: {self.state} ID: {self.unique_id}")
 
             # Logic
             if self.state == "return_to_hive":
