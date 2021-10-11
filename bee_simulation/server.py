@@ -68,10 +68,10 @@ model_params = {
     ),
     "t1":UserSettableParameter('static_text', value="Space parameters"),
     "init_flowers": UserSettableParameter(
-        "slider", "# of flowerfields", 10, 1, 30, description="Number of flower fields"
+        "slider", "# of flowerfields", 15, 1, 30, description="Number of flower fields"
     ),
     "min_flower_distance": UserSettableParameter(
-        "slider", "Minimal flower distance", 8, 1, 15, description="Minimal flower distance"
+        "slider", "Minimal flower distance", 5, 1, 15, description="Minimal flower distance"
     ),
     "min_nectar": UserSettableParameter(
         "slider", "Initial minimum # of nectar per flower", 2, 1, 10, description="Minimum nectar available in flowerfields"
