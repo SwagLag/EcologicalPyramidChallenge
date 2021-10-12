@@ -76,8 +76,9 @@ def bee_dance(agent):
             agent.clue_grade = 1000
     else:
         agent.init_clue = True
-        agent.clue_loc = (random.randint(0,agent.model.height), random.randint(0,agent.model.width))
+        agent.clue_loc = (random.randint(0, agent.model.height), random.randint(0, agent.model.width))
         agent.clue_grade = 1000
+
 
 def refill_energy(agent):
     hive = [a for a in agent.model.grid[agent.pos] if a.type == "hive"][0]
