@@ -4,11 +4,16 @@ import numpy as np
 
 from bee_simulation import helpers
 from bee_simulation.helpers import calc_closest_of_list
+import bee_simulation.logic as logic
 
 
 def move_to_target(agent, target_pos):
+    """Calculate which tile the agent want to go to next in order to go to their target."""
+
+    # We want our agent to go in a 'straight line' towards its target. To simulate this, we want him to randomly prefer
+    # moving along the x or y coördinates.
+
     first_x = random.choice([True, False])
-    # X then Y method
     if first_x:
         if target_pos[0] < agent.pos[0]:
             agent.model.grid.move_agent(agent, (agent.pos[0] - 1, agent.pos[1]))
@@ -22,6 +27,7 @@ def move_to_target(agent, target_pos):
             print("move_to_target origin same as target")
         else:
             exit(f"move_to_target error,current_position:{agent.pos}, target:{target_pos}")
+
     else:
         if target_pos[1] < agent.pos[1]:
             agent.model.grid.move_agent(agent, (agent.pos[0], agent.pos[1] - 1))
@@ -38,6 +44,7 @@ def move_to_target(agent, target_pos):
 
 
 def return_to_hive(agent):
+    """The bee wants to return to the hive."""
     hives = np.argwhere(agent.grid_memory == 'x')
     return move_to_target(agent, calc_closest_of_list(agent.pos, hives))
 
@@ -81,8 +88,12 @@ def bee_dance(agent):
 
 
 def refill_energy(agent):
+    """Bee restores energy when entering the hive."""
     hive = [a for a in agent.model.grid[agent.pos] if a.type == "hive"][0]
     refill_amount = abs(agent.max_energy - agent.energy)
+
+    # The bee gains energy and the hive loses energy when the bee stands on the hive
+    # ∀a ∃k ∃f((Bee(a) ˄ Beehive(k) ˄ FlowerField(f) ˄ Touch(a, k)) -> (GainHoney(k) ˄ LoseNectar(a)))
     if hive.energy >= refill_amount:
         hive.energy -= refill_amount
         agent.energy += refill_amount
@@ -92,11 +103,11 @@ def refill_energy(agent):
 
 
 def collect_nectar(agent, nectar):
-    """∀a ∀b ((Bee(a) ˄ FlowerField(b) ˄ ¬ HasNectar(a) ˄ (Touch(a, b) ˄ Nectar(b) ) -> (GainNectar(a) ˄
-    LoseNectar(b))))).
-    When a bee stands on a flowerfield, hasn't gathered any nectar yet and the flowerfield does contain nectar, then
-    the bee will collect this nectar."""
+    """Bee collects nectar from flowerfield."""
 
+    # When a bee stands on a flowerfield, hasn't gathered any nectar yet and the flowerfield does contain nectar, then
+    # the bee will collect this nectar
+    # ∀a ∀b ((Bee(a) ˄ FlowerField(b) ˄ ¬ HasNectar(a) ˄ (Touch(a, b) ˄ Nectar(b))) -> (GainNectar(a) ˄ LoseNectar(b)))
     if len(agent.nectar_collected) == 0:
         agent.nectar_collected.append(nectar.grade)
         if nectar.amount == 1:
@@ -107,9 +118,10 @@ def collect_nectar(agent, nectar):
 
 
 def dropoff_nectar(agent):
+    """A bee drops of his nectar."""
     hives = [a for a in agent.model.grid[agent.pos] if a.type == "hive"]
     for hive in hives:
-        if agent.pos == hive.pos:
+        if logic.touch(agent.pos, hive.pos):
             if len(agent.nectar_collected) > 0:
                 for n in agent.nectar_collected:
                     agent.model.nectar_collected += n
