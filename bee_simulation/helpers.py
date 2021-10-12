@@ -7,14 +7,14 @@ import scipy.stats as stats
 
 def calc_distance(origin_pos, target_pos):
     """
-    Berekent Manhatten Distance tussen de twee coordinaten
+    Calculate Manhatten distance between two coördinates.
     """
     return abs(origin_pos[0] - target_pos[0]) + abs(origin_pos[1] - target_pos[1])
 
 
 def calc_closest_of_list(origin_pos, target_positions):
     """
-    Berekent de dichtstbijzijnde tile uit een lijst van target_positions
+    Calculate closest tile from a list of target positions.
     """
     best = {"pos": (0, 0), "distance": 1000}
     for pos in target_positions:
@@ -27,10 +27,9 @@ def calc_closest_of_list(origin_pos, target_positions):
 
 def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
     """
-    Berekent de cost (afstand) voor elke tile in de grid van de
-    agent positie (from_agent == True) of vanuit een ander punt (gebruikt voor hive of clue)
+    Calculate the cost (distance) for every tile in the grid from the position of the agent or from a different point.
 
-    Deze functie wordt alleen gebruikt in de onderstaande functie generate_grid_gain
+    This function only gets used in the function 'generate_grid_gain'.
     """
     grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
 
@@ -46,15 +45,14 @@ def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
 
 def generate_grid_gain(agent, clue_loc=None, clue_grade=None):
     """
-    Berekent de (gain (nectar) - cost (distance)) voor elke tile voor een bepaalde agent.
-    Hierbij kan een clue_loc en clue_grade worden meegegeven.
+    Calculate the (gain (nectar) - cost (distance)) for every tile for a certain agent.
     """
     grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
             if type(clue_loc) is not type(None):
-                # Clue distance
+
                 clue_distance = calc_distance([ix, yx], clue_loc)
                 grid_values[ix, yx] = clue_grade * calc_distance_score_multiplier(clue_distance)
             if agent.grid_memory[ix, yx] == 'n':
