@@ -43,7 +43,7 @@ def get_task(df):
 
 
 def get_bid(df, agent, task):
-    if len(df[agent]) >= 1:
+    if len(df[agent]) > 0:
         return max(0, df[agent][task] - df[agent].nlargest(2)[-1:].values[0])
     else:
         return max(0, df[agent][task])
@@ -195,7 +195,7 @@ def generate_valuedataframe(agents, tasks):
 def assign_tasks(df):
     assignments = []
 
-    while df.shape[0] > 0 and df.shape[1] > 0:
+    while df.shape[0] > 2 and df.shape[1] > 2:
         task = get_task(df)
         bb = best_bid(df, task)
         assignments.append((bb['agent'], task))

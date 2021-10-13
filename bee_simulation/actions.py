@@ -129,4 +129,5 @@ def dropoff_nectar(agent):
                 agent.nectar_collected = []
 
                 # Bee dance
-                bee_dance(agent)
+                if agent.model.use_bee_dance:
+                    bee_dance(agent)

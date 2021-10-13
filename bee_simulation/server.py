@@ -95,7 +95,7 @@ model_params = {
     ),
     "t3": UserSettableParameter('static_text', value="Bee parameters"),
     "max_bee_energy": UserSettableParameter(
-        "slider", "Max bee energy", 50, 10, 100, description="Max bee energy"
+        "slider", "Max bee energy", 50, 10, 10000, description="Max bee energy"
     ),
     "max_clue_radius": UserSettableParameter(
         "slider", "Max clue radius", 0, 0, 10, description="Max # of tiles a clue can be off"
@@ -109,6 +109,9 @@ model_params = {
     ),
     "preset":UserSettableParameter(
         'checkbox', 'Preset field?', value=False
+    ),
+    "use_bee_dance": UserSettableParameter(
+        'checkbox', 'Bee dance', value=False
     ),
     # "behaviourprobability": UserSettableParameter(
     #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
