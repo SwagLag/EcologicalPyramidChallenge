@@ -1,3 +1,5 @@
+import random
+
 from bee_simulation.agents import Bee, Nectar, Hive, FlowerField
 from mesa import Model
 from mesa.space import MultiGrid
@@ -43,7 +45,7 @@ class BeeSimulation(Model):
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
                  perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=1, min_flower_distance=5,
-                 hivemind_events=True, hivemind_interval=10):
+                 hivemind_events=True, hivemind_interval=1):
 
         super().__init__()
         helpers.gen_linspace()
@@ -153,7 +155,25 @@ class BeeSimulation(Model):
             valuedataframe = helpers.generate_valuedataframe(bees, tasks)
             assignments = helpers.assign_tasks(valuedataframe)
             translated = helpers.translate_assignments(assignments, bees, tasks)
-            print(translated)
+            # print(translated)
+            for assignment in translated:
+                agent = assignment[0]
+                task = assignment[1]
+                print(task.type)
+
+                if task.type == 'explore':
+                    if agent.state != 'explore':
+                        agent.state = 'explore'
+                        agent.clue_pos = (random.randint(0, self.height), random.randint(0, self.width))
+                        agent.clue_grade = 1000
+                else:  # Fetch nectar
+                    print(task.type)
+                    agent.state = 'fetch_nectar'
+                    agent.clue_pos = task.pos
+                    agent.clue_grade = 10000
+                    agent.init_clue = False
+                    agent.explore_clue = None
+
 
         # Main loop:
         # tell all the agents in the model to run their step function

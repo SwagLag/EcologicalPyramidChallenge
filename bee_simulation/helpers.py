@@ -37,14 +37,13 @@ def calc_closest_of_list(origin_pos, target_positions):
 
 def get_task(df):
     y = df.max()
-    maxi = max(y.values)
     agent = y.idxmax()
     task = df[agent].idxmax()
     return task
 
 
 def get_bid(df, agent, task):
-    if len(df[agent]) > 1:
+    if len(df[agent]) >= 1:
         return max(0, df[agent][task] - df[agent].nlargest(2)[-1:].values[0])
     else:
         return max(0, df[agent][task])
@@ -189,9 +188,7 @@ def generate_valuedataframe(agents, tasks):
 def assign_tasks(df):
     assignments = []
 
-    while True:
-        if df.shape == (0,len(df.columns)):
-            break
+    while df.shape[0] > 0 and df.shape[1] > 0:
         task = get_task(df)
         bb = best_bid(df, task)
         assignments.append((bb['agent'], task))

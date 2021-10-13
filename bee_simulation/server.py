@@ -25,7 +25,7 @@ def agent_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["text"] = f"E:{agent.energy}"
         portrayal["text_color"] = "Yellow"
-        # portrayal["text"] = f"State:{agent.state}. MovingTo: {agent.clue_loc}"
+        portrayal["text"] = f"State:{agent.state}. MovingTo: {agent.clue_loc}"
 
         if len(agent.nectar_collected) > 0:
             portrayal["Color"] = "Black"

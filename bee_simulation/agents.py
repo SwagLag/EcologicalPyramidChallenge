@@ -35,6 +35,7 @@ class Bee(MovingEntity):
         # Options are:
         # - return_to_hive
         # - explore
+        # - fetch_nectar
 
         # Init grid memory
         self.hive_pos = None
@@ -82,7 +83,7 @@ class Bee(MovingEntity):
                 actions.return_to_hive(self)
 
             # When a bee doesn't yet want to go back to the hive, it will explore
-            elif self.state == "explore":
+            elif self.state == "explore" or self.state == 'fetch_nectar':
                 # We calculate the grid scores, this will indicate where a bee will want to move to
                 grid_scores = logic.calc_grid_scores(self)
 
