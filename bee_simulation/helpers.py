@@ -129,6 +129,22 @@ def gen_linspace():
     global_linspace_pdf = stats.expon.pdf(global_linspace_ppf)
 
 
+def task_distribution_algorithm_v2(agents, tasks):
+    assignments = []
+    t_agents = agents.copy()
+    t_tasks = tasks.copy()
+
+    if len(agents) > len(tasks):  # Als er meer agents zijn dan tasks
+        for i in range(len(agents) - len(tasks)):
+            t_tasks.append(Task("explore"))
+
+    assignmatrix = np.zeros((len(tasks), len(agents)))
+    for i, x in enumerate(assignmatrix):
+        for j, _ in enumerate(x):
+            assignmatrix[i,j] = t_agents[j].value(t_tasks[i])
+
+    print(assignmatrix)
+
 def task_distribution_algorithm(agents, tasks):
     """
     Distributes tasks based on the value each agent gives
@@ -137,7 +153,7 @@ def task_distribution_algorithm(agents, tasks):
 
     if tasks:
         assignments = []
-        t_agents = agents[0].copy()
+        t_agents = agents.copy()
         t_tasks = tasks.copy()
 
         # Fase 1: Reken voor elke agent voor elke taak zijn gegeven value uit.
@@ -154,15 +170,12 @@ def task_distribution_algorithm(agents, tasks):
         for i in range(len(t_agents)):
             # TODO: Fix de gelijkwaardige soort manier
             # TypeError: '<' not supported between instances of 'Bee' and 'Bee'
-            print('------------------------')
-            print(i)
-            print(taskagents)
-            print(taskvalues)
-
-
-            x2 = taskagents[i].copy()
-            x1 = taskvalues[i].copy()
-            x = zip(x1, x2)
+            temp = list(zip(taskvalues[i], taskagents[i]))
+            temp2 = sorted(temp)
+            stv, sta = zip(*temp2)
+            # stv, sta = zip(*sorted(zip(taskvalues[i].copy(), taskagents[i].copy())))
+            sortedtaskvalues.append(list(stv))
+            sortedtaskagents.append(list(sta))
 
             # s = sorted(x)
             #

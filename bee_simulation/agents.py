@@ -57,7 +57,14 @@ class Bee(MovingEntity):
     def value(self, task):
         """Determines the value of a collecting task."""
         if task.type == "nectar":
-            return task.grade - (helpers.calc_distance(self.pos, task.pos) + helpers.calc_distance(task.pos, self.hive_pos))
+            distancetotask = helpers.calc_distance(self.pos, task.pos)
+            distancetohive = helpers.calc_distance(task.pos, self.hive_pos)
+            returnvalue = task.grade - (distancetotask + distancetohive)
+            if returnvalue < 0:  # Als return value negatief is
+                returnvalue = None
+            return returnvalue
+        elif task.type == "explore":
+            return 0
         else:
             raise NotImplementedError
 

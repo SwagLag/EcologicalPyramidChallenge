@@ -145,11 +145,12 @@ class BeeSimulation(Model):
 
         # Events:
         if (self.schedule.steps + 1) % self.hivemind_interval == 0 and self.hivemind_events:
-            bees = [x for x in self.schedule.agents if isinstance(x, Bee)]
+            bees = [x for x in self.schedule.agents if isinstance(x, Bee) and len(x.nectar_collected) == 0]
+            # Alleen vrije bijen worden meegenomen in de taakverdeling.
             gk_grade, gk_amount = helpers.gather_gridknowledge(self)
             tasks = helpers.gather_tasks_nectar(gk_grade, gk_amount)
 
-            assignments = helpers.task_distribution_algorithm(bees, tasks)
+            assignments = helpers.task_distribution_algorithm_v2(bees, tasks)
             print(assignments)
 
 
