@@ -35,6 +35,9 @@ def update_state(agent):
         # ∀a ∃g ∃k((Bee(a) ˄ Beehive(k) ˄ GridExplored(g)) -> GoHome(a, k)))
         # When a bee has explored the whole grid, he will go home
         return "return_to_hive"
+
+    if agent.state == 'fetch_nectar':
+        return 'fetch_nectar'
     return "explore"
 
 

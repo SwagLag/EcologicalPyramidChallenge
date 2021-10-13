@@ -139,14 +139,13 @@ class BeeSimulation(Model):
         self.running = True
         self.datacollector.collect(self)
 
+
     def step(self):
         # Survival:
         if sum([x.alive for x in self.schedule.agents if isinstance(x, Bee)]) == 0:
             self.running = False
 
         # Events:
-        # After a certain amount of steps, a hivemind signal gets sent
-        # ∀a ∀b ∃c((Bee(a) ˄ Bee(b) ˄ Model(c) ˄ IsZero(HiveMindCounter(c)) -> HiveMind(a, b))
         if (self.schedule.steps + 1) % self.hivemind_interval == 0 and self.hivemind_events:
             bees = [x for x in self.schedule.agents if isinstance(x, Bee) and len(x.nectar_collected) == 0]
             # Alleen vrije bijen worden meegenomen in de taakverdeling.
@@ -160,7 +159,6 @@ class BeeSimulation(Model):
             for assignment in translated:
                 agent = assignment[0]
                 task = assignment[1]
-                print(task.type)
 
                 if task.type == 'explore':
                     if agent.state != 'explore':
@@ -168,7 +166,6 @@ class BeeSimulation(Model):
                         agent.clue_pos = (random.randint(0, self.height), random.randint(0, self.width))
                         agent.clue_grade = 1000
                 else:  # Fetch nectar
-                    print(task.type)
                     agent.state = 'fetch_nectar'
                     agent.clue_pos = task.pos
                     agent.clue_grade = 10000
