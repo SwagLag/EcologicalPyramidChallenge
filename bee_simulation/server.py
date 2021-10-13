@@ -42,7 +42,7 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 1
         portrayal["Filled"] = "true"
         portrayal["Color"] = NECTAR_COLOR
-        portrayal["text"] = f"a:{agent.amount},g:{agent.grade}"
+        portrayal["text"] = f"{agent.pos},a:{agent.amount},g:{agent.grade}"
         portrayal["text_color"] = "Black"
 
     # update portrayal characteristics for the hive

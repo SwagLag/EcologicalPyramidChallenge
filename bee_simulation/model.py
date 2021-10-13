@@ -165,7 +165,7 @@ class BeeSimulation(Model):
                 else:  # Fetch nectar
                     agent.state = 'fetch_nectar'
                     agent.clue_pos = task.pos
-                    agent.clue_grade = 10000
+                    agent.clue_grade = 100000000
                     agent.init_clue = False
                     agent.explore_clue = None
 

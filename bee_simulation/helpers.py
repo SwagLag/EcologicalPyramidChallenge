@@ -195,7 +195,7 @@ def generate_valuedataframe(agents, tasks):
 def assign_tasks(df):
     assignments = []
 
-    while df.shape[0] > 1 and df.shape[1] > 1 and df.shape != (0, len(df.columns)):
+    while df.shape[0] > 0 and df.shape[1] > 0:
         task = get_task(df)
         bb = best_bid(df, task)
         assignments.append((bb['agent'], task))
