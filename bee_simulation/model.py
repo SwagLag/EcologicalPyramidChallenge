@@ -42,7 +42,7 @@ class BeeSimulation(Model):
     def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
-                 perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=3, min_flower_distance=5,
+                 perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=1, min_flower_distance=5,
                  hivemind_events=True, hivemind_interval=10):
 
         super().__init__()
@@ -148,11 +148,12 @@ class BeeSimulation(Model):
             bees = [x for x in self.schedule.agents if isinstance(x, Bee) and len(x.nectar_collected) == 0]
             # Alleen vrije bijen worden meegenomen in de taakverdeling.
             gk_grade, gk_amount = helpers.gather_gridknowledge(self)
-            tasks = helpers.gather_tasks_nectar(gk_grade, gk_amount)
+            tasks = helpers.gather_tasks_bees(gk_grade, gk_amount, len(bees))
 
-            assignments = helpers.task_distribution_algorithm_v2(bees, tasks)
-            print(assignments)
-
+            valuedataframe = helpers.generate_valuedataframe(bees, tasks)
+            assignments = helpers.assign_tasks(valuedataframe)
+            translated = helpers.translate_assignments(assignments, bees, tasks)
+            print(translated)
 
         # Main loop:
         # tell all the agents in the model to run their step function

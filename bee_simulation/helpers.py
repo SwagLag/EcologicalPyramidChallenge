@@ -35,6 +35,38 @@ def calc_closest_of_list(origin_pos, target_positions):
     return best['pos']
 
 
+def get_task(df):
+    y = df.max()
+    maxi = max(y.values)
+    agent = y.idxmax()
+    task = df[agent].idxmax()
+    return task
+
+
+def get_bid(df, agent, task):
+    if len(df[agent]) > 1:
+        return max(0, df[agent][task] - df[agent].nlargest(2)[-1:].values[0])
+    else:
+        return max(0, df[agent][task])
+
+
+def best_bid(df, task):
+    highest_bid = {'agent': None, 'bid': -1}
+    for agent in df.columns:
+        bid = get_bid(df, agent, task)
+        if bid > highest_bid['bid']:
+            highest_bid['agent'] = agent
+            highest_bid['bid'] = bid
+
+    return highest_bid
+
+
+def skim_df(df, agent, task):
+    x = df.drop(agent, axis=1)
+    x = x.drop(task, axis=0)
+    return x
+
+
 def gather_gridknowledge(model):
     grid_grade, grid_amount = np.zeros((model.width, model.height), dtype=np.int), np.zeros((model.width, model.height), dtype=np.int)
     beeknowledge = [x.grid_memory for x in model.schedule.agents if x.type == "bee"]
@@ -47,7 +79,7 @@ def gather_gridknowledge(model):
     return grid_grade, grid_amount
 
 
-def gather_tasks_nectar(grid_grade, grid_amount):
+def gather_tasks_bees(grid_grade, grid_amount, agent_amount):
     """
     Creates task objects based on the amount, position and grade of
     each nectar object.
@@ -63,6 +95,12 @@ def gather_tasks_nectar(grid_grade, grid_amount):
                         task.pos = (i, j)
                         task.grade = grid_grade[i, j]
                         tasks.append(task)
+
+        if agent_amount > len(tasks):
+            explorer_tasks = agent_amount - len(tasks)
+            for k in range(explorer_tasks):
+                task = Task("explore")
+                tasks.append(task)
 
         return tasks
     else:
@@ -129,21 +167,55 @@ def gen_linspace():
     global_linspace_pdf = stats.expon.pdf(global_linspace_ppf)
 
 
-def task_distribution_algorithm_v2(agents, tasks):
+def generate_valuedataframe(agents, tasks):
     assignments = []
     t_agents = agents.copy()
     t_tasks = tasks.copy()
+    t_agent_ids = [x.unique_id for x in t_agents]
 
-    if len(agents) > len(tasks):  # Als er meer agents zijn dan tasks
-        for i in range(len(agents) - len(tasks)):
-            t_tasks.append(Task("explore"))
+    # Wordt verzorgd door gather_tasks_bees()
+    # if len(agents) > len(tasks):  # Als er meer agents zijn dan tasks
+    #     for i in range(len(agents) - len(tasks)):
+    #         t_tasks.append(Task("explore"))
 
-    assignmatrix = np.zeros((len(tasks), len(agents)))
-    for i, x in enumerate(assignmatrix):
+    valuematrix = np.zeros((len(t_tasks), len(t_agent_ids)))
+    valuedataframe = pd.DataFrame(valuematrix,columns=t_agent_ids, dtype=np.int)
+    for i, x in valuedataframe.iterrows():
         for j, _ in enumerate(x):
-            assignmatrix[i,j] = t_agents[j].value(t_tasks[i])
+            valuedataframe[t_agent_ids[j]][i] = t_agents[j].value(t_tasks[i])
+    return valuedataframe
 
-    print(assignmatrix)
+
+def assign_tasks(df):
+    assignments = []
+
+    while True:
+        if df.shape == (0,len(df.columns)):
+            break
+        task = get_task(df)
+        bb = best_bid(df, task)
+        assignments.append((bb['agent'], task))
+        df = skim_df(df, bb['agent'], task)
+    return assignments
+
+def translate_assignments(assignments, agents, tasks):
+    """
+    :param assignments: The list that contains tuples containing (agentid, taskid)
+    :param tasks: The list that contains the tasks used in the generate_valuedataframe func
+    :param agents: The list that contains the agents used in the generate_valuedataframe func
+    :return: A list containing tuples containing (agent, task)
+    """
+    agent_ids = [x.unique_id for x in agents]
+    translated = []
+
+    for pair in assignments:
+        agent_id = pair[0]
+        task_id = pair[1]
+        relevant_agent = agents[agent_ids.index(agent_id)]
+        relevant_task = tasks[task_id]
+        translated.append((relevant_agent,relevant_task))
+
+    return translated
 
 def task_distribution_algorithm(agents, tasks):
     """
@@ -206,7 +278,6 @@ def calc_distance_score_multiplier(distance):
     global global_linspace_ppf
     multiplier = len(np.nonzero(stats.expon.cdf(global_linspace_ppf, loc=distance))[0]) / 100
     return multiplier
-
 
 def gen_clue_distance(max_radius):
     """
