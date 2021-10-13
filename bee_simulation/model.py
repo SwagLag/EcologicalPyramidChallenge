@@ -42,7 +42,7 @@ class BeeSimulation(Model):
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
                  perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=1, min_flower_distance=5,
-                 hivemind_events=True, hivemind_interval=1, use_bee_dance=False):
+                 hivemind_events=True, hivemind_interval=1):
 
         super().__init__()
         helpers.gen_linspace()
@@ -66,7 +66,6 @@ class BeeSimulation(Model):
         self.min_flower_distance = min_flower_distance
         self.hivemind_events = hivemind_events
         self.hivemind_interval = hivemind_interval
-        self.use_bee_dance = use_bee_dance
 
         # Agent parameters
         # self.behaviourprobability = behaviourprobability

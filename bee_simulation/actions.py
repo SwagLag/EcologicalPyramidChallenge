@@ -71,7 +71,8 @@ def bee_dance(agent):
         agent.init_clue = False
         # Put clue into grid values
         true_clue_loc = random.choice(nectar_positions)
-        clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, agent.model.max_clue_radius)
+        clue_loc = true_clue_loc
+        # clue_loc = helpers.gen_clue_tile(agent.model, true_clue_loc, agent.model.max_clue_radius)
         # print(f"True loc:{true_clue_loc}, Clue loc:{clue_loc}")
         nectar = [a for a in agent.model.grid[true_clue_loc] if a.type == "nectar"]
         if len(nectar) > 0:
@@ -129,5 +130,5 @@ def dropoff_nectar(agent):
                 agent.nectar_collected = []
 
                 # Bee dance
-                if agent.model.use_bee_dance:
+                if not agent.model.hivemind_events:
                     bee_dance(agent)

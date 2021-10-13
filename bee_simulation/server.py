@@ -110,8 +110,8 @@ model_params = {
     "preset":UserSettableParameter(
         'checkbox', 'Preset field?', value=False
     ),
-    "use_bee_dance": UserSettableParameter(
-        'checkbox', 'Bee dance', value=False
+    "hivemind_events": UserSettableParameter(
+        'checkbox', 'Hivemind events', value=True
     ),
     # "behaviourprobability": UserSettableParameter(
     #     "slider", "Bee Behaviour Probability", 50, 0, 100, description="Probability that the bee will"
