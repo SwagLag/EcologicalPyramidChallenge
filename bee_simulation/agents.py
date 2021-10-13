@@ -49,7 +49,7 @@ class Bee(MovingEntity):
 
     def init_grid_memory(self, agent):  # ----------------------------------------- Hoort dit in bij?
         """Initiating grid memory (and put in hive locations)."""
-        grid_memory = np.zeros([self.model.grid_w, self.model.grid_h], dtype=np.str)
+        grid_memory = np.zeros([self.model.width, self.model.height], dtype=np.str)
         for hive in [a for a in self.model.schedule.agents if a.type == "hive"]:
             grid_memory[hive.pos] = "x"
             agent.hive_pos = hive.pos

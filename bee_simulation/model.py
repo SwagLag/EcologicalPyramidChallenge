@@ -33,15 +33,12 @@ def get_steps(model):
 # --------------------------------
 
 class BeeSimulation(Model):
-    # grid height
-    grid_h = 20
-    # grid width
-    grid_w = 20
+    # # grid height
+    # height = 20
+    # # grid width
+    # width = 20
 
-    """init parameters "init_people", "rich_threshold", and "reserve_percent"
-       are all UserSettableParameters"""
-
-    def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
+    def __init__(self, height=20, width=20, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
                  perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=1, min_flower_distance=5,

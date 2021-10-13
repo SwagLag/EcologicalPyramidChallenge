@@ -121,7 +121,7 @@ def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
     """
     Calculate the cost (distance) for every tile in the grid from the position of the agent or from a different point.
     """
-    grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
+    grid_values = np.zeros([agent.model.width, agent.model.height], dtype=np.float)
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
@@ -136,7 +136,7 @@ def generate_grid_gain(agent, clue_loc=None, clue_grade=None):
     """
     Calculate the (gain (nectar) - cost (distance)) for every tile for a certain agent.
     """
-    grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
+    grid_values = np.zeros([agent.model.width, agent.model.height], dtype=np.float)
 
     for ix, x in enumerate(grid_values):
         for yx, y in enumerate(x):
