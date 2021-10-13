@@ -137,13 +137,14 @@ class BeeSimulation(Model):
         self.running = True
         self.datacollector.collect(self)
 
-
     def step(self):
         # Survival:
         if sum([x.alive for x in self.schedule.agents if isinstance(x, Bee)]) == 0:
             self.running = False
 
         # Events:
+        # After a certain amount of steps, a hivemind signal gets sent
+        # ∀a ∀b ∃c((Bee(a) ˄ Bee(b) ˄ Model(c) ˄ IsZero(HiveMindCounter(c)) -> HiveMind(a, b))
         if (self.schedule.steps + 1) % self.hivemind_interval == 0 and self.hivemind_events:
             bees = [x for x in self.schedule.agents if isinstance(x, Bee) and len(x.nectar_collected) == 0]
             # Alleen vrije bijen worden meegenomen in de taakverdeling.

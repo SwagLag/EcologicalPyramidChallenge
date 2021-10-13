@@ -12,12 +12,13 @@ FLOWERFIELD_COLOR = "#008000"
 
 
 def agent_portrayal(agent):
+    """We create the portrayal of every agent."""
     if agent is None:
         return
 
     portrayal = {}
 
-    # update portrayal characteristics for each object
+    # update portrayal characteristics for the bee
     if isinstance(agent, Bee):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.5
@@ -35,6 +36,7 @@ def agent_portrayal(agent):
         if agent.alive is False:
             portrayal["Color"] = "Red"
 
+    # update portrayal characteristics for the nectar
     if isinstance(agent, Nectar):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.3
@@ -44,6 +46,7 @@ def agent_portrayal(agent):
         portrayal["text"] = f"a:{agent.amount},g:{agent.grade}"
         portrayal["text_color"] = "Black"
 
+    # update portrayal characteristics for the hive
     if isinstance(agent, Hive):
         portrayal["Shape"] = "rect"
         portrayal["w"] = 0.5
@@ -52,6 +55,7 @@ def agent_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = HIVE_COLOR
 
+    # update portrayal characteristics for the flowerfield
     if isinstance(agent, FlowerField):
         portrayal["Shape"] = "rect"
         portrayal["w"] = 0.4
@@ -59,7 +63,6 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 0
         portrayal["Filled"] = "true"
         portrayal["Color"] = FLOWERFIELD_COLOR
-
     return portrayal
 
 

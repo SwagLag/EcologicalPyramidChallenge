@@ -56,7 +56,6 @@ def calc_grid_scores(agent):
 def touch(a: mesa.Agent, b: mesa.Agent):
     """∀a ∀b ∃p ((PhysicalConcept(a) ˄ PhysicalConcept(b) ˄ Tile(p) ˄ (IsAt(a, p) ˄ IsAt(b, p)) -> Touch(a, b))).
     When a two physical concepts are on the same square, they touch."""
-
     if a == b:
         return True
     return False
@@ -64,6 +63,5 @@ def touch(a: mesa.Agent, b: mesa.Agent):
 
 def bee_die(bee):
     """∀a ((Bee(a) ˄ NoEnergy(a)) -> Die(a)). When a bee has nog energy left, it will die."""
-
     if bee.energy <= 0:
-        bee.model.running = False
+        bee.alive = False

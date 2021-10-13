@@ -32,9 +32,6 @@ class Bee(MovingEntity):
 
         # State
         self.state = "return_to_hive"
-        # Options are:
-        # - return_to_hive
-        # - explore
 
         # Init grid memory
         self.hive_pos = None
@@ -123,10 +120,8 @@ class Bee(MovingEntity):
             # ∀a ∀b((Bee(a) ˄ TimeStep(b)) -> MinusOne(Energy(a)))
             self.energy -= 1
 
-            # When
-            # ∀a ((Bee(a) ˄ IsZero(Energy(a))) -> Die(a))
-            if self.energy <= 0:
-                self.alive = False
+            # Check whether a bee is dead
+            logic.bee_die(self)
 
 
 class FlowerField(StaticObject):
