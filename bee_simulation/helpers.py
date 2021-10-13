@@ -50,24 +50,36 @@ def get_bid(df, agent, task):
 
 
 def best_bid(df, task):
+    """Find the agent who most wants this task."""
     highest_bid = {'agent': None, 'bid': -1}
+
+    # For every agent
     for agent in df.columns:
+
+        # Find out how badly he wants the task
         bid = get_bid(df, agent, task)
+
+        # If he wants it more than the last agents, then he will get it
         if bid > highest_bid['bid']:
             highest_bid['agent'] = agent
             highest_bid['bid'] = bid
-
     return highest_bid
 
 
 def skim_df(df, agent, task):
+    """Delete the agent and his assigned task from the dataframe."""
     x = df.drop(agent, axis=1)
     x = x.drop(task, axis=0)
     return x
 
 
 def gather_gridknowledge(model):
+    """The bees gridknowledge gets updated, it now has the total gridknowledge from every bee. They also gain the
+    knowledge where every flower presides, how much nectar it has left and what the nectars grade is."""
     grid_grade, grid_amount = np.zeros((model.width, model.height), dtype=np.int), np.zeros((model.width, model.height), dtype=np.int)
+
+    # When a hivemind signal gets send, the gridmemory of every bee gets updated
+    # ∀a ∀b ((Bee(a) ˄ Bee(b) ˄ HiveMind(a, b)) -> (GainGridMemory(a, b) ˄ GainGridMemory(b, a)))
     beeknowledge = [x.grid_memory for x in model.schedule.agents if x.type == "bee"]
     nectars = [y for x in model.grid for y in x if y.type == "nectar"]
     for nectar in nectars:
@@ -80,8 +92,7 @@ def gather_gridknowledge(model):
 
 def gather_tasks_bees(grid_grade, grid_amount, agent_amount):
     """
-    Creates task objects based on the amount, position and grade of
-    each nectar object.
+    Creates task objects based on the amount, position and grade of each nectar object.
     """
     if grid_grade.shape == grid_amount.shape:
         tasks = []
@@ -109,8 +120,6 @@ def gather_tasks_bees(grid_grade, grid_amount, agent_amount):
 def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
     """
     Calculate the cost (distance) for every tile in the grid from the position of the agent or from a different point.
-
-    This function only gets used in the function 'generate_grid_gain'.
     """
     grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
 
@@ -120,7 +129,6 @@ def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
                 grid_values[ix, yx] = calc_distance(agent.pos, (ix, yx))
             else:
                 grid_values[ix, yx] = calc_distance(nexus_pos, (ix, yx))
-
     return grid_values
 
 
@@ -141,24 +149,23 @@ def generate_grid_gain(agent, clue_loc=None, clue_grade=None):
                 if len(n) > 0:
                     grid_values[ix, yx] = n[0].grade
 
-            # De huidige positie altijd negeren
+            # Ignore the bees own position
             if agent.pos == [ix, yx]:
                 grid_values[ix, yx] = -1000
 
-            # Ook negeren wanneer de tile een van de volgende waardes bevat:
-            # - Een hive(x)
-            # - Een lege ontdekte tile(o)
-            # - Nectar met negatieve gain(/) <- Deze wordt als negeren in de grid gemarkeerd.
+            # Also ignore the following tiles:
+            # - A hive(x)
+            # - An empty explored tile (o)
+            # - Nectar with a negative gain (/).
 
             if agent.grid_memory[ix, yx] in ['o', 'x', '/']:
                 grid_values[ix, yx] = -1000
-
     return grid_values
 
 
 def gen_linspace():
     """
-    Functie omtrent onzekerheid van de clue afwijking. (Wordt niet gebruikt in de 3e challenge)
+    Function around uncertainty of the clue radius.
     """
     global global_linspace_ppf, global_linspace_pdf
     global_linspace_ppf = np.linspace(stats.expon.ppf(0.01),
@@ -194,6 +201,7 @@ def assign_tasks(df):
         assignments.append((bb['agent'], task))
         df = skim_df(df, bb['agent'], task)
     return assignments
+
 
 def translate_assignments(assignments, agents, tasks):
     """
@@ -299,3 +307,5 @@ def gen_clue_tile(model, center, max_radius):
                 options.append([ix, yx])
 
     return random.choice(options)
+
+
