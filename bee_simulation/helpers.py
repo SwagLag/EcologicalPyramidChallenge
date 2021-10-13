@@ -5,12 +5,15 @@ import pandas as pd
 import scipy.stats as stats
 
 class Task:
-    """Abstract helper class for designating tasks that agents have
+    """
+    Abstract helper class for designating tasks that agents have
     to complete. Agent interpretation should be handled by assigning
     a unique task type to each object, and assigning unique attributes
-    afterwards related to that task type."""
+    afterwards related to that task type.
+    """
     def __init__(self, tasktype):
         self.type = tasktype
+
 
 def calc_distance(origin_pos, target_pos):
     """
@@ -31,15 +34,6 @@ def calc_closest_of_list(origin_pos, target_positions):
             best['pos'] = pos
     return best['pos']
 
-# def merge_gridknowledge(gk1, gk2):
-#     if gk1.shape == gk2.shape:
-#         gk3 = np.zeros(gk1.shape, dtype=np.str)
-#         for i, x in enumerate(gk1):
-#             for j, y in enumerate(x):
-#                 if gk1[i,j] == "n" or gk2[i,j] == "n":
-#                     gk3[i,j] = "n"
-#     else:
-#         raise Exception("")
 
 def gather_gridknowledge(model):
     grid_grade, grid_amount = np.zeros((model.width, model.height), dtype=np.int), np.zeros((model.width, model.height), dtype=np.int)
@@ -52,9 +46,12 @@ def gather_gridknowledge(model):
                 grid_amount[nectar.pos] = nectar.amount
     return grid_grade, grid_amount
 
+
 def gather_tasks_nectar(grid_grade, grid_amount):
-    """Creates task objects based on the amount, position and grade of
-    each nectar object."""
+    """
+    Creates task objects based on the amount, position and grade of
+    each nectar object.
+    """
     if grid_grade.shape == grid_amount.shape:
         tasks = []
         tasktype = "nectar"
@@ -69,6 +66,7 @@ def gather_tasks_nectar(grid_grade, grid_amount):
         return tasks
     else:
         raise Exception()
+
 
 def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
     """
@@ -131,7 +129,10 @@ def gen_linspace():
 
 
 def task_distribution_algorithm(agents, tasks):
-    """Distributes tasks based on """
+    """
+    Distributes tasks based on the value each agent gives
+    to a task.
+    """
     assignments = []
     t_agents = agents.copy()
     t_tasks = tasks.copy()
@@ -158,6 +159,7 @@ def task_distribution_algorithm(agents, tasks):
         for lst in sortedtaskagents:
             lst.remove(bestagent)
     return assignments
+
 
 def calc_distance_score_multiplier(distance):
     """
