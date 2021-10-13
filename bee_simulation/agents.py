@@ -49,6 +49,13 @@ class Bee(MovingEntity):
             agent.hive_pos = hive.pos
         return grid_memory
 
+    def value(self, task):
+        """Determines the value of a collecting task."""
+        if task.type == "nectar":
+            return task.grade - (helpers.calc_distance(self.pos, task.pos) + helpers.calc_distance(task.pos, self.hive_pos))
+        else:
+            raise NotImplementedError
+
     def step(self):
         if self.alive:
             # Perception

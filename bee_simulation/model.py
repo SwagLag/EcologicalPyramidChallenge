@@ -42,7 +42,8 @@ class BeeSimulation(Model):
     def __init__(self, height=grid_h, width=grid_w, init_bees=1, init_flowers=6, init_min_nectar_grade=1,
                  init_max_nectar_grade=30, min_nectar=1, max_nectar=1, nectar_respawn_interval=50,
                  collect_negative_value_nectar=True,
-                 perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=3, min_flower_distance=5):
+                 perception_range=1, max_bee_energy=30, preset=False, max_clue_radius=3, min_flower_distance=5,
+                 hivemind_events=True, hivemind_interval=10):
 
         super().__init__()
         helpers.gen_linspace()
@@ -64,6 +65,8 @@ class BeeSimulation(Model):
         self.preset = preset
         self.max_clue_radius = max_clue_radius
         self.min_flower_distance = min_flower_distance
+        self.hivemind_events = hivemind_events
+        self.hivemind_interval = hivemind_interval
 
         # Agent parameters
         # self.behaviourprobability = behaviourprobability
@@ -136,8 +139,20 @@ class BeeSimulation(Model):
 
 
     def step(self):
+        # Survival:
         if sum([x.alive for x in self.schedule.agents if isinstance(x,Bee)]) == 0:
             self.running = False
+
+        # Events:
+        if (self.schedule.steps + 1) % self.hivemind_interval == 0 and self.hivemind_events:
+            bees = [x for x in self.schedule.agents if isinstance(x,Bee)]
+            gk_grade, gk_amount = helpers.gather_gridknowledge(self)
+            tasks = helpers.gather_tasks_nectar(gk_grade, gk_amount)
+            assignments = helpers.task_distribution_algorithm(bees, tasks)
+            print(assignments)
+
+
+        # Main loop:
         # tell all the agents in the model to run their step function
         self.schedule.step()
         # collect data

@@ -4,6 +4,13 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 
+class Task:
+    """Abstract helper class for designating tasks that agents have
+    to complete. Agent interpretation should be handled by assigning
+    a unique task type to each object, and assigning unique attributes
+    afterwards related to that task type."""
+    def __init__(self, tasktype):
+        self.type = tasktype
 
 def calc_distance(origin_pos, target_pos):
     return abs(origin_pos[0] - target_pos[0]) + abs(origin_pos[1] - target_pos[1])
@@ -18,6 +25,44 @@ def calc_closest_of_list(origin_pos, target_positions):
             best['pos'] = pos
     return best['pos']
 
+# def merge_gridknowledge(gk1, gk2):
+#     if gk1.shape == gk2.shape:
+#         gk3 = np.zeros(gk1.shape, dtype=np.str)
+#         for i, x in enumerate(gk1):
+#             for j, y in enumerate(x):
+#                 if gk1[i,j] == "n" or gk2[i,j] == "n":
+#                     gk3[i,j] = "n"
+#     else:
+#         raise Exception("")
+
+def gather_gridknowledge(model):
+    grid_grade, grid_amount = np.zeros((model.width, model.height), dtype=np.int), np.zeros((model.width, model.height), dtype=np.int)
+    beeknowledge = [x.grid_memory for x in model.schedule.agents if x.type == "bee"]
+    nectars = [y for x in model.grid for y in x if y.type == "nectar"]
+    for nectar in nectars:
+        for gm in beeknowledge:
+            if gm[nectar.pos] == "n":
+                grid_grade[nectar.pos] = nectar.grade
+                grid_amount[nectar.pos] = nectar.amount
+    return grid_grade, grid_amount
+
+def gather_tasks_nectar(grid_grade, grid_amount):
+    """Creates task objects based on the amount, position and grade of
+    each nectar object."""
+    if grid_grade.shape == grid_amount.shape:
+        tasks = []
+        tasktype = "nectar"
+        for i, x in enumerate(grid_grade):
+            for j, _ in enumerate(x):
+                if grid_grade[i,j] > 0:
+                    for _ in range(grid_amount[i,j]):
+                        task = Task(tasktype)
+                        task.pos = (i, j)
+                        task.grade = grid_grade[i,j]
+                        tasks.append(task)
+        return tasks
+    else:
+        raise Exception()
 
 def generate_grid_costs(agent, nexus_pos, from_agent: bool = False):
     grid_values = np.zeros([agent.model.grid_w, agent.model.grid_h], dtype=np.float)
@@ -59,6 +104,35 @@ def gen_linspace():
                                       stats.expon.ppf(0.99), 100)
     global_linspace_pdf = stats.expon.pdf(global_linspace_ppf)
 
+
+def task_distribution_algorithm(agents, tasks):
+    """Distributes tasks based on """
+    assignments = []
+    t_agents = agents.copy()
+    t_tasks = tasks.copy()
+    # Fase 1: Reken voor elke agent voor elke taak zijn gegeven value uit.
+    taskagents = [t_agents for t_task in t_tasks]
+    taskvalues = [[] for t_task in t_tasks]
+    for i, t_task in enumerate(t_tasks):
+        for t_agent in t_agents:
+            taskvalues[i].append(t_agent.value(t_task))
+    # Fase 2: Taak (en agents!) worden gesorteerd o.b.v. value bij de taak values per taak.
+    sortedtaskvalues, sortedtaskagents = [], []
+    for i in range(len(agents)):
+        # TODO: Fix de gelijkwaardige soort manier
+        # TypeError: '<' not supported between instances of 'Bee' and 'Bee'
+        stv, sta = zip(*sorted(zip(taskvalues[i].copy(), taskagents[i].copy())))
+        sortedtaskvalues.append(list(stv))
+        sortedtaskagents.append(list(sta))
+    # Fase 3: Wijs voor elke taak een agent toe
+    for i, t_task in enumerate(t_tasks):
+        bestagent = sortedtaskagents[i][-1]
+        assignments.append((bestagent, t_task))
+        # Nadat een agent toegewezen is, kan hij niet toegewezen worden aan een andere taak.
+        # Ofwel, we verwijderen hem van alle sortedtaskagent lijsten.
+        for lst in sortedtaskagents:
+            lst.remove(bestagent)
+    return assignments
 
 def calc_distance_score_multiplier(distance):
     global global_linspace_ppf
