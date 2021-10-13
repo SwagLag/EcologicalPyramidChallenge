@@ -140,14 +140,15 @@ class BeeSimulation(Model):
 
     def step(self):
         # Survival:
-        if sum([x.alive for x in self.schedule.agents if isinstance(x,Bee)]) == 0:
+        if sum([x.alive for x in self.schedule.agents if isinstance(x, Bee)]) == 0:
             self.running = False
 
         # Events:
         if (self.schedule.steps + 1) % self.hivemind_interval == 0 and self.hivemind_events:
-            bees = [x for x in self.schedule.agents if isinstance(x,Bee)]
+            bees = [x for x in self.schedule.agents if isinstance(x, Bee)]
             gk_grade, gk_amount = helpers.gather_gridknowledge(self)
             tasks = helpers.gather_tasks_nectar(gk_grade, gk_amount)
+
             assignments = helpers.task_distribution_algorithm(bees, tasks)
             print(assignments)
 

@@ -6,10 +6,11 @@ from typing import List, Union
 
 
 def update_memory(agent, perception, show_grid=False):
+    """Update the memory of an agent after every time step."""
     for tile in perception:
         for entity in agent.model.grid[tile]:
             if entity.type == "nectar" and agent.grid_memory[tile] != '/':  # remember nectar locations
-                if agent.init_clue == True:
+                if agent.init_clue:
                     agent.init_clue = False
                     agent.clue_loc = None
                     agent.clue_grade = 0
@@ -52,11 +53,11 @@ def calc_grid_scores(agent):
     return grid_scores
 
 
-def touch(agent_a: mesa.Agent, agent_b: mesa.Agent):
+def touch(a: mesa.Agent, b: mesa.Agent):
     """∀a ∀b ∃p ((PhysicalConcept(a) ˄ PhysicalConcept(b) ˄ Tile(p) ˄ (IsAt(a, p) ˄ IsAt(b, p)) -> Touch(a, b))).
     When a two physical concepts are on the same square, they touch."""
 
-    if agent_a.pos == agent_b.pos:
+    if a == b:
         return True
     return False
 

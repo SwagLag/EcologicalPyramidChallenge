@@ -57,12 +57,13 @@ def gather_tasks_nectar(grid_grade, grid_amount):
         tasktype = "nectar"
         for i, x in enumerate(grid_grade):
             for j, _ in enumerate(x):
-                if grid_grade[i,j] > 0:
-                    for _ in range(grid_amount[i,j]):
+                if grid_grade[i, j] > 0:
+                    for _ in range(grid_amount[i, j]):
                         task = Task(tasktype)
                         task.pos = (i, j)
-                        task.grade = grid_grade[i,j]
+                        task.grade = grid_grade[i, j]
                         tasks.append(task)
+
         return tasks
     else:
         raise Exception()
@@ -133,32 +134,56 @@ def task_distribution_algorithm(agents, tasks):
     Distributes tasks based on the value each agent gives
     to a task.
     """
-    assignments = []
-    t_agents = agents.copy()
-    t_tasks = tasks.copy()
-    # Fase 1: Reken voor elke agent voor elke taak zijn gegeven value uit.
-    taskagents = [t_agents for t_task in t_tasks]
-    taskvalues = [[] for t_task in t_tasks]
-    for i, t_task in enumerate(t_tasks):
-        for t_agent in t_agents:
-            taskvalues[i].append(t_agent.value(t_task))
-    # Fase 2: Taak (en agents!) worden gesorteerd o.b.v. value bij de taak values per taak.
-    sortedtaskvalues, sortedtaskagents = [], []
-    for i in range(len(agents)):
-        # TODO: Fix de gelijkwaardige soort manier
-        # TypeError: '<' not supported between instances of 'Bee' and 'Bee'
-        stv, sta = zip(*sorted(zip(taskvalues[i].copy(), taskagents[i].copy())))
-        sortedtaskvalues.append(list(stv))
-        sortedtaskagents.append(list(sta))
-    # Fase 3: Wijs voor elke taak een agent toe
-    for i, t_task in enumerate(t_tasks):
-        bestagent = sortedtaskagents[i][-1]
-        assignments.append((bestagent, t_task))
-        # Nadat een agent toegewezen is, kan hij niet toegewezen worden aan een andere taak.
-        # Ofwel, we verwijderen hem van alle sortedtaskagent lijsten.
-        for lst in sortedtaskagents:
-            lst.remove(bestagent)
-    return assignments
+
+    if tasks:
+        assignments = []
+        t_agents = agents[0].copy()
+        t_tasks = tasks.copy()
+
+        # Fase 1: Reken voor elke agent voor elke taak zijn gegeven value uit.
+        taskagents = [t_agents for t_task in t_tasks]
+        taskvalues = [[] for t_task in t_tasks]
+
+        for i, t_task in enumerate(t_tasks):
+            for t_agent in t_agents:
+                taskvalues[i].append(t_agent.value(t_task))
+
+        # Fase 2: Taak (en agents!) worden gesorteerd o.b.v. value bij de taak values per taak.
+        sortedtaskvalues, sortedtaskagents = [], []
+
+        for i in range(len(t_agents)):
+            # TODO: Fix de gelijkwaardige soort manier
+            # TypeError: '<' not supported between instances of 'Bee' and 'Bee'
+            print('------------------------')
+            print(i)
+            print(taskagents)
+            print(taskvalues)
+
+
+            x2 = taskagents[i].copy()
+            x1 = taskvalues[i].copy()
+            x = zip(x1, x2)
+
+            # s = sorted(x)
+            #
+            # stv, sta = zip(s)
+            # sortedtaskvalues.append(list(stv))
+            # sortedtaskagents.append(list(sta))
+
+        # Fase 3: Wijs voor elke taak een agent toe
+        for i, t_task in enumerate(t_tasks):
+            bestagent = sortedtaskagents[i][-1]
+            assignments.append((bestagent, t_task))
+
+            # Nadat een agent toegewezen is, kan hij niet toegewezen worden aan een andere taak.
+            # Ofwel, we verwijderen hem van alle sortedtaskagent lijsten.
+            for lst in sortedtaskagents:
+                lst.remove(bestagent)
+        return assignments
+
+    else:
+        # Er zijn geen bloemenvelden gevonden, dus iedereen moet gaan ontdekken.
+        return []
 
 
 def calc_distance_score_multiplier(distance):
