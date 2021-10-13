@@ -62,7 +62,7 @@ class Bee(MovingEntity):
             distancetohive = helpers.calc_distance(task.pos, self.hive_pos)
             returnvalue = task.grade - (distancetotask + distancetohive)
             if returnvalue < 0:  # Als return value negatief is
-                returnvalue = None
+                returnvalue = 0
             return returnvalue
         elif task.type == "explore":
             return 0

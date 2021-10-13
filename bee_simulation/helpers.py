@@ -196,8 +196,11 @@ def assign_tasks(df):
     assignments = []
 
     while df.shape[0] > 2 and df.shape[1] > 2:
-        task = get_task(df)
-        bb = best_bid(df, task)
+        try:
+            task = get_task(df)
+            bb = best_bid(df, task)
+        except:
+            print(df)
         assignments.append((bb['agent'], task))
         df = skim_df(df, bb['agent'], task)
     return assignments
